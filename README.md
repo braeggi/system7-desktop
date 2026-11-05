@@ -112,6 +112,20 @@ Die Seite speichert nur, was Besucher selbst ins Gästebuch schreiben. Erst wenn
 
 Datei `inhalt/Gästebuch.gaestebuch` löschen und die Seite neu veröffentlichen. Die Einträge bleiben in Supabase erhalten.
 
+## Hintergrund
+
+Der Schreibtisch zeigt einen blühenden Baum, gerastert auf reines Schwarz-Weiß. Das Foto stammt von [Shaylyn](https://unsplash.com/de/@mpadb) auf [Unsplash](https://unsplash.com/de/fotos/ein-baum-mit-weissen-bluten-vor-blauem-himmel-geu9CBZes9E) (kostenlose Unsplash-Lizenz). Das Originalfoto liegt nicht im Projekt, nur das fertige Bild `src/assets/hintergrund/blueten.png` (60 KB).
+
+Der Himmel im Bild ist genau das klassische 50 %-Raster. Das Bild ist rechts unten verankert und wird 1:1 angezeigt; auf Bildschirmen über 1920 × 1200 Pixel geht das Raster drumherum weiter.
+
+**Eigenen Hintergrund machen:** Das Skript `scripts/hintergrund.py` rastert ein Foto mit dem Atkinson-Verfahren des Original-Mac. Es eignet sich für helle Motive vor blauem Himmel. Es braucht Python 3 und Pillow (`pip install pillow`):
+
+```bash
+python3 scripts/hintergrund.py foto.jpg src/assets/hintergrund/blueten.png
+```
+
+Fotos von Unsplash+ brauchen ein Abo; nur Fotos mit der kostenlosen Unsplash-Lizenz sind frei nutzbar. Zurück zum reinen Punktmuster geht es in `src/lib/ui/theme.css` mit `--wallpaper: var(--dither-50);`.
+
 ## Schrift
 
 Menüs, Fenstertitel, Icon-Beschriftungen und Überschriften nutzen **ChicagoFLF**, eine Nachbildung der Mac-Schrift Chicago. Sie ist Public Domain (siehe `src/assets/fonts/README.ChicagoFLF.txt`) und liegt im Projekt selbst, damit beim Laden keine Anfrage an Google oder andere fremde Server geht. Lesetexte in Dokumenten bleiben in `Geneva` bzw. der Systemschrift.

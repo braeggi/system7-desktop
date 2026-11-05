@@ -24,7 +24,12 @@
   --dither-50: conic-gradient(#000 25%, #fff 0 50%, #000 0 75%, #fff 0) 0 0 / 2px 2px;
   /* 25 %-Raster als durchsichtige Abdunkelung */
   --dither-25-overlay: conic-gradient(#000 25%, transparent 0) 0 0 / 2px 2px;
-  --wallpaper: var(--dither-50);
+  /*
+   * Blühender Baum (Foto: Shaylyn, Unsplash), mit scripts/hintergrund.py auf 1 Bit gerastert.
+   * Der Himmel im Bild ist genau das 50 %-Raster, so geht es auf großen Bildschirmen nahtlos weiter.
+   * 1:1 angezeigt und mit image-rendering: pixelated (siehe .desk), damit jeder Punkt scharf bleibt.
+   */
+  --wallpaper: url('../../assets/hintergrund/blueten.png') right bottom / 1920px 1200px no-repeat, var(--dither-50);
   --stripes: repeating-linear-gradient(#000 0 1px, #fff 1px 2px);
   --frame: 1px solid #000;
   --drop-shadow: 1px 1px 0 #000;

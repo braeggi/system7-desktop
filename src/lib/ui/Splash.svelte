@@ -57,6 +57,7 @@
     align-items: center;
     justify-content: center;
     background: var(--wallpaper);
+    image-rendering: pixelated;
     cursor: default;
   }
   .box {

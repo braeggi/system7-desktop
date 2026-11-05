@@ -79,6 +79,11 @@
     position: fixed;
     inset: 0;
     background: var(--wallpaper);
+    /* Hintergrundbild scharf; Inhalte (etwa Fotos in Fenstern) wieder normal */
+    image-rendering: pixelated;
     overflow: hidden;
+  }
+  .desk > :global(*) {
+    image-rendering: auto;
   }
 </style>
