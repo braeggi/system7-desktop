@@ -1,0 +1,101 @@
+/*
+ * System 6: reines Schwarz-Weiß. Grau gibt es nicht als Farbe, nur als 1-Bit-Punktmuster.
+ * Einzige Ausnahme sind die Farben der Fenster-Ampel beim Hover.
+ */
+
+/*
+ * ChicagoFLF (Public Domain, siehe fonts/README.ChicagoFLF.txt), auf Latin-1 reduziert.
+ * Sie liegt im Projekt statt bei Google & Co.: keine Anfrage an fremde Server.
+ * Chicago ist von Haus aus fett. Der Gewichtsbereich verhindert, dass der Browser
+ * bei font-weight: 700 eine künstlich verdickte Version rechnet.
+ */
+@font-face {
+  font-family: 'ChicagoFLF';
+  src: url('../../assets/fonts/ChicagoFLF.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --black: #000;
+  --white: #fff;
+  /* 50 %-Raster: jedes zweite Pixel schwarz */
+  --dither-50: conic-gradient(#000 25%, #fff 0 50%, #000 0 75%, #fff 0) 0 0 / 2px 2px;
+  /* 25 %-Raster als durchsichtige Abdunkelung */
+  --dither-25-overlay: conic-gradient(#000 25%, transparent 0) 0 0 / 2px 2px;
+  --wallpaper: var(--dither-50);
+  --stripes: repeating-linear-gradient(#000 0 1px, #fff 1px 2px);
+  --frame: 1px solid #000;
+  --drop-shadow: 1px 1px 0 #000;
+  --ink: #000;
+  --font-ui: 'ChicagoFLF', Geneva, Monaco, monospace;
+  --font-text: Geneva, Monaco, 'Helvetica Neue', Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  background: #000;
+  /* keine Kantenglättung: Schrift so pixelig wie möglich (wirkt in Safari und Chrome auf dem Mac) */
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+#app {
+  height: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+svg {
+  shape-rendering: crispEdges;
+}
+
+/* Rollbalken im Stil von System 6 (Chrome, Safari, Edge) */
+.scroll-retro::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+.scroll-retro::-webkit-scrollbar-track {
+  background: var(--dither-50);
+  border-left: var(--frame);
+}
+.scroll-retro::-webkit-scrollbar-thumb {
+  background: #fff;
+  border: var(--frame);
+}
+.scroll-retro::-webkit-scrollbar-corner {
+  background: #fff;
+}
+
+/* Deaktivierter Text: im Punktmuster „ausgegraut“, wie in System 6 */
+.dithered-text {
+  color: transparent;
+  background: var(--dither-50);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

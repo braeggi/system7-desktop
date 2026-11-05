@@ -1,0 +1,28 @@
+name: Gästebuch wach halten
+
+# Supabase legt kostenlose Projekte nach etwa einer Woche ohne Zugriffe schlafen.
+# Dieser Job liest alle drei Tage kurz den Gästebuch-Text und hält das Projekt so wach.
+on:
+  schedule:
+    - cron: '17 5 */3 * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  wecken:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Supabase anfragen
+        env:
+          URL: ${{ vars.SUPABASE_URL }}
+          KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "Kein Gästebuch eingerichtet (SUPABASE_URL oder SUPABASE_ANON_KEY fehlt) – nichts zu tun."
+            exit 0
+          fi
+          # liest nur, ändert nichts; nur der apikey-Kopf, damit auch neue Schlüssel (sb_publishable_…) gehen
+          curl -fsS "$URL/rest/v1/gaestebuch?select=version&id=eq.1" \
+            -H "apikey: $KEY"
+          echo
