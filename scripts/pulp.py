@@ -18,16 +18,18 @@ from PIL import Image
 W, H, K = 96, 56, 4
 VX, JX, Y = 50, 64, 8  # linke Kante von Vincent und Jules, Oberkante der Figuren
 FLOOR = Y + 35
+HIT_X = 24  # dort trifft die Pizza ein und wird getroffen
 
 COLOR = {
     'bg': (102, 102, 100),
     'H': (22, 20, 20),     # Haar Vincent
     'S': (214, 170, 140),  # Haut Vincent
     's': (184, 140, 110),
-    'D': (92, 58, 36),     # Haut Jules
-    'd': (60, 36, 22),
-    'A': (52, 32, 20),     # Haar Jules
-    'a': (84, 52, 30),
+    'D': (112, 80, 54),    # Haut Jules
+    'd': (36, 22, 16),     # Bart
+    'B': (22, 14, 13),     # Haar Jules, dunkel bis hell
+    'A': (42, 24, 16),
+    'a': (63, 40, 28),
     'K': (30, 28, 28),     # Anzug
     'k': (52, 48, 48),     # Falte im Anzug
     'W': (240, 240, 240),  # Hemd
@@ -83,17 +85,17 @@ VINCENT = [
 ]
 
 JULES = [
-    "....AaAAaA.....",
-    "..AAAAAAAAAA...",
-    ".AAaAAAAAaAAA..",
-    ".AAAAAAAAAAAA..",
-    ".AAADDDDDDAAA..",
-    "..AADDDDDDDAA..",
-    "..AAdDDDdDDAA..",
-    "..AADDDDDDDA...",
-    "..AADdddddDA...",
-    "...AdDDDDDd....",
-    "....dddddd.....",
+    "......BA.......",
+    ".....BAaA......",
+    "....BAAAaA.....",
+    "...BBAaAAAa....",
+    "..BBBAAAaAAa...",
+    ".BBBBBBAAAaAAa.",
+    "..BDDDDBAAaAa..",
+    "..KKKKDBAaA....",
+    "..BDdddDBAa....",
+    "...ddDddAA.....",
+    "......DD.......",
     "....KKWTWKK....",
     "...KKKWTWKKK...",
     "..KKKKWTWKKKK..",
@@ -167,9 +169,9 @@ def stamp(img, sprite, x, y):
                 img.putpixel((x + i, y + j), COLOR[c])
 
 
-def without_left_arm(sprite, cols):
-    """Den Arm auf der linken Bildseite entfernen, damit er ausgestreckt gezeichnet werden kann."""
-    return [''.join('.' if j >= 13 and i in cols else c for i, c in enumerate(row)) for j, row in enumerate(sprite)]
+def without_left_arm(sprite, cols, start=14):
+    """Den Arm auf der linken Bildseite unterhalb der Schulter entfernen, damit er ausgestreckt gezeichnet werden kann."""
+    return [''.join('.' if j >= start and i in cols else c for i, c in enumerate(row)) for j, row in enumerate(sprite)]
 
 
 def frame(raised=False, pizza=None, flash=0, pieces=(), smoke=(), vincent_blink=False):
@@ -190,20 +192,21 @@ def frame(raised=False, pizza=None, flash=0, pieces=(), smoke=(), vincent_blink=
     else:
         stamp(img, without_left_arm(vincent, (0, 1)), VX, Y)
         stamp(img, without_left_arm(JULES, (2, 3)), JX, Y - 1)
-        # ausgestreckte Arme; der von Jules liegt vor Vincent
+        # Wie im Vorbild: Vincents Arm etwas unter der Schulter, Jules' Arm auf Schulterhöhe
+        # quer vor Vincents Schultern, seine Waffe genau an Vincents Schulter
         for x in range(VX - 8, VX + 2):
-            put(x, Y + 13, 'K'); put(x, Y + 14, 'K')
-        put(VX - 9, Y + 13, 'S'); put(VX - 9, Y + 14, 'S')
-        stamp(img, GUN_LEFT, VX - 15, Y + 12)
-        for x in range(VX - 6, JX + 4):
-            put(x, Y + 16, 'K'); put(x, Y + 17, 'K')
-        put(VX - 7, Y + 16, 'D'); put(VX - 7, Y + 17, 'D')
-        stamp(img, GUN_LEFT, VX - 13, Y + 15)
+            put(x, Y + 14, 'K'); put(x, Y + 15, 'K')
+        put(VX - 9, Y + 14, 'S'); put(VX - 9, Y + 15, 'S')
+        stamp(img, GUN_LEFT, VX - 15, Y + 13)
+        for x in range(VX, JX + 4):
+            put(x, Y + 11, 'K'); put(x, Y + 12, 'K')
+        put(VX - 1, Y + 11, 'D'); put(VX - 1, Y + 12, 'D')
+        stamp(img, GUN_LEFT, VX - 7, Y + 10)
         if flash:
-            # Mündungsfeuer abwechselnd aus beiden Waffen, dazu eine kurze Leuchtspur
-            fx, fy = (VX - 18, Y + 11) if flash == 1 else (VX - 16, Y + 14)
+            # Mündungsfeuer abwechselnd aus beiden Waffen, dazu eine Leuchtspur bis zur Pizza
+            fx, fy = (VX - 18, Y + 12) if flash == 1 else (VX - 10, Y + 9)
             stamp(img, FLASH, fx, fy)
-            for x in range(fx - 10, fx - 1, 2):
+            for x in range(HIT_X + 5, fx - 1, 2):
                 put(x, fy + 1, 'f')
     for x, y, c in smoke:
         put(x, y, c)
@@ -220,8 +223,8 @@ def scene():
     frames = []
     # stehen, Vincent blinzelt einmal
     frames += [(frame(), 900), (frame(vincent_blink=True), 120), (frame(), 900)]
-    # die Pizza fliegt im Bogen von links heran; kurz vor dem Ziel ziehen beide
-    path = [(-6 + t * 30, 32 - math.sin(t * math.pi * 0.9) * 16) for t in (i / 8 for i in range(9))]
+    # die Pizza fliegt im Bogen von links heran, genau auf Höhe der Waffen; kurz vor dem Ziel ziehen beide
+    path = [(HIT_X - 30 + t * 30, 34 - 14 * t - math.sin(t * math.pi) * 10) for t in (i / 8 for i in range(9))]
     for i, (x, y) in enumerate(path):
         frames.append((frame(raised=i >= 5, pizza=(SPIN[i % 4], round(x), round(y))), 90))
     hx, hy = path[-1]
@@ -233,7 +236,7 @@ def scene():
         a = math.pi * (0.1 + n * 0.8 / (len(PIECES) - 1))
         speed = 1.2 + (n % 3) * 0.4
         parts.append([sp, hx - 1, hy - 1, math.cos(a) * speed - 0.5, -math.sin(a) * speed - 0.6])
-    muzzles = [(VX - 16, Y + 12), (VX - 14, Y + 15)]
+    muzzles = [(VX - 16, Y + 13), (VX - 8, Y + 10)]
     for step in range(14):
         for p in parts:
             sp, x, y, vx, vy = p
