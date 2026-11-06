@@ -84,3 +84,17 @@ test('Fenster rücken nach, wenn das Browserfenster schmaler wird', async ({ pag
   await expect.poll(async () => (await win.locator('.titlebar').boundingBox())!.x).toBeLessThanOrEqual(800 - 79)
   expect((await win.locator('.titlebar').boundingBox())!.y).toBeLessThanOrEqual(576)
 })
+
+test('auf freier Fläche zieht die Maus ein Auswahlrechteck auf', async ({ page }) => {
+  const from = { x: 300, y: 300 }
+  // der Startpunkt muss auf dem freien Schreibtisch liegen, nicht auf einem Icon
+  expect(await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.getAttribute('data-drop'), from)).toBe('desk')
+  const rect = page.getByTestId('auswahlrechteck')
+  await page.mouse.move(from.x, from.y)
+  await page.mouse.down()
+  await page.mouse.move(200, 250, { steps: 8 })
+  await expect(rect).toBeVisible()
+  expect(await rect.boundingBox()).toEqual({ x: 200, y: 250, width: 100, height: 50 })
+  await page.mouse.up()
+  await expect(rect).toHaveCount(0)
+})

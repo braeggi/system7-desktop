@@ -4,6 +4,7 @@
   import { viewport } from '../viewport.svelte'
   import { getDeskContext } from './actions'
   import Icon from './Icon.svelte'
+  import Marquee from './Marquee.svelte'
   import { titleOf } from './title'
   import Window from './Window.svelte'
   import WindowContent from './WindowContent.svelte'
@@ -23,6 +24,8 @@
   const trash = $derived(trashPosition(viewport.size))
   const full = $derived(isTrashFull(desk.state))
 
+  let marquee: Marquee
+
   // Wird das Browserfenster kleiner, rücken Fenster nach, damit ihre Titelleiste greifbar bleibt.
   $effect(() => {
     windows.clampAll(viewport.size)
@@ -34,7 +37,9 @@
   data-drop="desk"
   role="presentation"
   onpointerdown={(e) => {
-    if (e.target === e.currentTarget) selection.id = null
+    if (e.target !== e.currentTarget) return
+    selection.id = null
+    marquee.begin(e)
   }}
 >
   {#each onDesk as id (id)}
@@ -81,6 +86,8 @@
       <WindowContent content={win.content} />
     </Window>
   {/each}
+
+  <Marquee bind:this={marquee} />
 </div>
 
 <style>
