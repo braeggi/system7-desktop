@@ -140,6 +140,14 @@ python3 scripts/hintergrund.py foto.jpg src/assets/hintergrund/blueten.png
 
 Fotos von Unsplash+ brauchen ein Abo; nur Fotos mit der kostenlosen Unsplash-Lizenz sind frei nutzbar. Zum reinen Punktmuster ohne Bild geht es mit `--wallpaper: var(--dither-50);`.
 
+## pulp.gif
+
+`inhalt/pulp.gif` zeigt Vincent und Jules aus Pulp Fiction als Pixelfiguren: Eine Pizza fliegt heran, beide ziehen und schießen, die Pizza zerspringt. Das GIF läuft in einer Schleife, sobald das Fenster offen ist. Die Figuren sind von Hand gezeichnet, Punkt für Punkt, im Skript `scripts/pulp.py`. Dort stehen auch die Farben und der Ablauf. Das Bild ist 4-fach vergrößert gespeichert (384 × 224), damit das Fenster es 1:1 und scharf zeigt. Neu erzeugen (braucht Python 3 und Pillow):
+
+```bash
+python3 scripts/pulp.py inhalt/pulp.gif
+```
+
 ## Schrift
 
 Menüs, Fenstertitel, Icon-Beschriftungen und Überschriften nutzen **ChicagoFLF**, eine Nachbildung der Mac-Schrift Chicago. Sie ist Public Domain (siehe `src/assets/fonts/README.ChicagoFLF.txt`) und liegt im Projekt selbst, damit beim Laden keine Anfrage an Google oder andere fremde Server geht. Lesetexte in Dokumenten bleiben in `Geneva` bzw. der Systemschrift.

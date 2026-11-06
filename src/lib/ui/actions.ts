@@ -16,18 +16,25 @@ const DEFAULT_SIZE: Size = { w: 420, h: 320 }
 const CONTAINER_SIZE: Size = { w: 360, h: 240 }
 const ABOUT_SIZE: Size = { w: 320, h: 200 }
 
+// Rahmen (1 px je Seite) und Titelleiste (20 px), die das Fenster um das Bild legt
+const IMAGE_CHROME: Size = { w: 2, h: 22 }
+
+/** Fenstergröße für ein Bild: 1:1, damit Pixel scharf bleiben; höchstens 70 % des Bildschirms. */
+export function imageWindowSize(natural: Size, screen: Size): Size {
+  const scale = Math.min(1, (screen.w * 0.7) / natural.w, (screen.h * 0.7) / natural.h)
+  return {
+    w: Math.max(MIN_WIN.w, Math.round(natural.w * scale) + IMAGE_CHROME.w),
+    h: Math.max(MIN_WIN.h, Math.round(natural.h * scale) + IMAGE_CHROME.h),
+  }
+}
+
 function imageSize(src: string): Promise<Size> {
   return new Promise((resolve) => {
     const img = new Image()
     const fallback = setTimeout(() => resolve(DEFAULT_SIZE), 1500)
     img.onload = () => {
       clearTimeout(fallback)
-      const max = { w: viewport.size.w * 0.7, h: viewport.size.h * 0.7 }
-      const scale = Math.min(1, max.w / img.naturalWidth, max.h / img.naturalHeight)
-      resolve({
-        w: Math.max(MIN_WIN.w, Math.round(img.naturalWidth * scale)),
-        h: Math.max(MIN_WIN.h, Math.round(img.naturalHeight * scale) + 26),
-      })
+      resolve(imageWindowSize({ w: img.naturalWidth, h: img.naturalHeight }, viewport.size))
     }
     img.onerror = () => {
       clearTimeout(fallback)
