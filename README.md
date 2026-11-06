@@ -1,6 +1,6 @@
 # Mein Schreibtisch
 
-Eine persönliche Webseite, die wie ein Schreibtisch des klassischen Mac-Betriebssystems System 6 aussieht. Sie ist in reinem Schwarz-Weiß und pixelgenau gebaut. Die einzige Farbe ist die Fenster-Ampel, die beim Drüberfahren rot, gelb und grün wird.
+Eine persönliche Webseite, die wie ein Schreibtisch des klassischen Mac-Betriebssystems System 6 aussieht. Sie ist in reinem Schwarz-Weiß und pixelgenau gebaut. Farbe gibt es nur im gerasterten Hintergrund und in der Fenster-Ampel, die beim Drüberfahren rot, gelb und grün wird.
 
 Besucher können:
 - Dokumente und Ordner öffnen
@@ -114,17 +114,31 @@ Datei `inhalt/Gästebuch.gaestebuch` löschen und die Seite neu veröffentlichen
 
 ## Hintergrund
 
-Der Schreibtisch zeigt einen blühenden Baum, gerastert auf reines Schwarz-Weiß. Das Foto stammt von [Shaylyn](https://unsplash.com/de/@mpadb) auf [Unsplash](https://unsplash.com/de/fotos/ein-baum-mit-weissen-bluten-vor-blauem-himmel-geu9CBZes9E) (kostenlose Unsplash-Lizenz). Das Originalfoto liegt nicht im Projekt, nur das fertige Bild `src/assets/hintergrund/blueten.png` (60 KB).
+Der Schreibtisch zeigt fließende Formen wie bei Fluid Art, in nur vier flachen Farben: Weiß, Blau, Dunkelblau und Schwarz. Übergänge entstehen wie beim Original-Mac aus Punkten (Atkinson-Dithering). Das Bild ist am Computer erzeugt, ohne Foto, und liegt in `src/assets/hintergrund/fluid.png` (2560 × 1600, 370 KB). Es ist rechts unten verankert und wird 1:1 angezeigt; auf noch größeren Bildschirmen geht es in Blau weiter.
 
-Der Himmel im Bild ist genau das klassische 50 %-Raster. Das Bild ist rechts unten verankert und wird 1:1 angezeigt; auf Bildschirmen über 1920 × 1200 Pixel geht das Raster drumherum weiter.
+**Neue Form würfeln:** Das Skript `scripts/fluid.py` erzeugt das Bild. Jeder `--seed` ergibt eine andere Form, Seed 1 ist der eingebaute Hintergrund. Farben, Größe der Formen und Stärke der Verzerrung stehen oben im Skript. Es braucht Python 3, numpy und Pillow (`pip install numpy pillow`):
 
-**Eigenen Hintergrund machen:** Das Skript `scripts/hintergrund.py` rastert ein Foto mit dem Atkinson-Verfahren des Original-Mac. Es eignet sich für helle Motive vor blauem Himmel. Es braucht Python 3 und Pillow (`pip install pillow`):
+```bash
+python3 scripts/fluid.py src/assets/hintergrund/fluid.png --seed 7
+```
+
+Änderst du das Blau, passe auch die Farbe am Ende von `--wallpaper` in `src/lib/ui/theme.css` an.
+
+### Blühender Baum
+
+Der frühere Hintergrund liegt noch im Projekt: ein blühender Baum in reinem Schwarz-Weiß, dessen Himmel genau das klassische 50 %-Raster ist. Das Foto stammt von [Shaylyn](https://unsplash.com/de/@mpadb) auf [Unsplash](https://unsplash.com/de/fotos/ein-baum-mit-weissen-bluten-vor-blauem-himmel-geu9CBZes9E) (kostenlose Unsplash-Lizenz). Im Projekt liegt nur das fertige Bild `src/assets/hintergrund/blueten.png` (60 KB). Zurück geht es in `src/lib/ui/theme.css` mit:
+
+```css
+--wallpaper: url('../../assets/hintergrund/blueten.png') right bottom / 1920px 1200px no-repeat, var(--dither-50);
+```
+
+Das Skript `scripts/hintergrund.py` rastert ein eigenes Foto auf diese Weise. Es eignet sich für helle Motive vor blauem Himmel und braucht Python 3 und Pillow:
 
 ```bash
 python3 scripts/hintergrund.py foto.jpg src/assets/hintergrund/blueten.png
 ```
 
-Fotos von Unsplash+ brauchen ein Abo; nur Fotos mit der kostenlosen Unsplash-Lizenz sind frei nutzbar. Zurück zum reinen Punktmuster geht es in `src/lib/ui/theme.css` mit `--wallpaper: var(--dither-50);`.
+Fotos von Unsplash+ brauchen ein Abo; nur Fotos mit der kostenlosen Unsplash-Lizenz sind frei nutzbar. Zum reinen Punktmuster ohne Bild geht es mit `--wallpaper: var(--dither-50);`.
 
 ## Schrift
 
