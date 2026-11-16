@@ -22,31 +22,31 @@
 
   const menus: Menu[] = $derived([
     {
-      label: 'Über diesen Schreibtisch',
+      label: 'About This Desktop',
       monogram: true,
-      items: [{ label: 'Über diesen Schreibtisch …', disabled: false, run: () => actions.open({ kind: 'about' }) }],
+      items: [{ label: 'About This Desktop …', disabled: false, run: () => actions.open({ kind: 'about' }) }],
     },
     {
-      label: 'Ablage',
+      label: 'File',
       items: [
         {
-          label: 'Öffnen',
+          label: 'Open',
           disabled: selection.id === null,
           run: () => selection.id && actions.open({ kind: 'item', id: selection.id }),
         },
         {
-          label: 'Fenster schließen',
+          label: 'Close Window',
           disabled: !windows.frontmost && windows.stack.length === 0,
           run: () => (windows.stack.length ? windows.closeMobile() : windows.closeFrontmost()),
         },
       ],
     },
     {
-      label: 'Spezial',
+      label: 'Special',
       items: [
-        { label: 'Papierkorb entleeren …', disabled: !isTrashFull(desk.state), run: onEmptyTrash },
+        { label: 'Empty Trash …', disabled: !isTrashFull(desk.state), run: onEmptyTrash },
         {
-          label: 'Schreibtisch aufräumen',
+          label: 'Clean Up Desktop',
           disabled: false,
           run: () => {
             windows.closeAll()
@@ -138,7 +138,7 @@
   }}
 />
 
-<div class="menubar" role="menubar" aria-label="Menüleiste" tabindex="-1" bind:this={nav}>
+<div class="menubar" role="menubar" aria-label="Menu bar" tabindex="-1" bind:this={nav}>
   {#each menus as menu, i (menu.label)}
     <div class="slot">
       <button

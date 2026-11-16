@@ -1,13 +1,11 @@
-import type { Locator, Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 
-export async function skipSplash(page: Page) {
-  await page.addInitScript(() => {
-    try {
-      sessionStorage.setItem('schreibtisch:splash', '1')
-    } catch {
-      // ohne sessionStorage gibt es ohnehin keinen Startbildschirm
-    }
-  })
+/** Schließt das Begrüßungsfenster, das sich beim Laden öffnet, damit es die übrigen Tests nicht verdeckt. */
+export async function closeGreeting(page: Page) {
+  const greeting = page.getByRole('dialog', { name: 'hello world.txt' })
+  await expect(greeting).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(greeting).toHaveCount(0)
 }
 
 export async function center(locator: Locator) {

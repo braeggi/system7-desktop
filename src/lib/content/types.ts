@@ -18,6 +18,8 @@ export interface CatalogItem {
   folder: ItemId | null
   html?: string
   src?: string
+  /** Smiley und blinkender Cursor am Textende (Frontmatter `cursor: true`) */
+  cursor?: boolean
 }
 
 export interface Catalog {
@@ -29,6 +31,8 @@ export interface Catalog {
 export interface SiteConfig {
   titel: string
   monogramm: string
+  /** Dokument aus `inhalt/`, das sich beim Laden von selbst öffnet */
+  start?: string
 }
 
 export interface LayoutFile {

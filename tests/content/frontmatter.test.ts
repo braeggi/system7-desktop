@@ -13,4 +13,10 @@ describe('parseFrontmatter', () => {
   it('entfernt Anführungszeichen um den Titel', () => {
     expect(parseFrontmatter('---\ntitle: "A: B"\n---\nx').title).toBe('A: B')
   })
+
+  it('liest den Schalter cursor', () => {
+    expect(parseFrontmatter('---\ntitle: a\ncursor: true\n---\nText').cursor).toBe(true)
+    expect(parseFrontmatter('---\ncursor: false\n---\nText').cursor).toBeUndefined()
+    expect(parseFrontmatter('---\ntitle: a\n---\nText').cursor).toBeUndefined()
+  })
 })

@@ -30,8 +30,8 @@
 
   <div class="trash">
     <Icon
-      title="Papierkorb"
-      label={full ? 'Papierkorb (voll)' : 'Papierkorb'}
+      title="Trash"
+      label={full ? 'Trash (full)' : 'Trash'}
       kind="trash"
       {full}
       drop="trash"

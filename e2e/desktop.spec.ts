@@ -1,44 +1,51 @@
 import { expect, test } from '@playwright/test'
-import { center, mouseDrag, settled, skipSplash } from './helpers'
+import { center, closeGreeting, mouseDrag, settled } from './helpers'
 
 test.beforeEach(async ({ page }) => {
-  await skipSplash(page)
   await page.goto('/')
+  await closeGreeting(page)
 })
 
-const desk = (page: import('@playwright/test').Page) => page.getByRole('main', { name: 'Schreibtisch' })
+const desk = (page: import('@playwright/test').Page) => page.getByRole('main', { name: 'Desktop' })
+
+test('beim Laden öffnet sich hello world.txt mit Smiley und Cursor', async ({ page }) => {
+  await page.reload()
+  const greeting = page.getByRole('dialog', { name: 'hello world.txt' })
+  await expect(greeting).toBeVisible()
+  await expect(greeting.getByTestId('textende')).toBeVisible()
+})
 
 test('ein Dokument in den Papierkorb ziehen bleibt nach dem Neuladen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Über mich' })), await center(page.getByRole('button', { name: 'Papierkorb' })))
-  await expect(page.getByRole('button', { name: 'Über mich' })).toHaveCount(0)
-  await expect(page.getByRole('button', { name: 'Papierkorb (voll)' })).toBeVisible()
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'About me' })), await center(page.getByRole('button', { name: 'Trash' })))
+  await expect(page.getByRole('button', { name: 'About me' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Trash (full)' })).toBeVisible()
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Papierkorb (voll)' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Über mich' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Trash (full)' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'About me' })).toHaveCount(0)
 })
 
 test('ein Dokument in einen Ordner legen und wieder herausholen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Kontakt' })), await center(page.getByRole('button', { name: 'Projekte' })))
-  await page.getByRole('button', { name: 'Projekte' }).dblclick()
-  const folder = page.getByRole('dialog', { name: 'Projekte' })
-  await expect(folder.getByRole('button', { name: 'Kontakt' })).toBeVisible()
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'Contact' })), await center(page.getByRole('button', { name: 'Projects' })))
+  await page.getByRole('button', { name: 'Projects' }).dblclick()
+  const folder = page.getByRole('dialog', { name: 'Projects' })
+  await expect(folder.getByRole('button', { name: 'Contact' })).toBeVisible()
   await settled(folder)
 
-  await mouseDrag(page, await center(folder.getByRole('button', { name: 'Kontakt' })), { x: 600, y: 600 })
-  await expect(folder.getByRole('button', { name: 'Kontakt' })).toHaveCount(0)
-  await expect(desk(page).getByRole('button', { name: 'Kontakt' })).toBeVisible()
+  await mouseDrag(page, await center(folder.getByRole('button', { name: 'Contact' })), { x: 600, y: 600 })
+  await expect(folder.getByRole('button', { name: 'Contact' })).toHaveCount(0)
+  await expect(desk(page).getByRole('button', { name: 'Contact' })).toBeVisible()
 })
 
 test('ein Ordner lässt sich nicht in einen Ordner legen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Projekte' })), await center(page.getByRole('button', { name: 'Fotos' })))
-  await expect(page.getByRole('button', { name: 'Projekte' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Fotos' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Papierkorb' })).toBeVisible()
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'Projects' })), await center(page.getByRole('button', { name: 'Photos' })))
+  await expect(page.getByRole('button', { name: 'Projects' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Photos' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Trash' })).toBeVisible()
 })
 
 test('ein Fenster bleibt beim Wegziehen greifbar', async ({ page }) => {
-  await page.getByRole('button', { name: 'Über mich' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'Über mich' })
+  await page.getByRole('button', { name: 'About me' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'About me' })
   await expect(win).toBeVisible()
   await settled(win)
   const title = win.locator('.titlebar')
@@ -48,15 +55,15 @@ test('ein Fenster bleibt beim Wegziehen greifbar', async ({ page }) => {
 })
 
 test('ein verschobenes Icon behält seinen Platz', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Fotos' })), { x: 300, y: 400 })
-  const before = await page.getByRole('button', { name: 'Fotos' }).boundingBox()
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'Photos' })), { x: 300, y: 400 })
+  const before = await page.getByRole('button', { name: 'Photos' }).boundingBox()
   await page.reload()
-  const after = await page.getByRole('button', { name: 'Fotos' }).boundingBox()
+  const after = await page.getByRole('button', { name: 'Photos' }).boundingBox()
   expect(after).toEqual(before)
 })
 
 test('ein Ordner lässt sich ein kleines Stück verschieben', async ({ page }) => {
-  const folder = page.getByRole('button', { name: 'Projekte' })
+  const folder = page.getByRole('button', { name: 'Projects' })
   const before = (await folder.boundingBox())!
   const start = await center(folder)
   await mouseDrag(page, start, { x: start.x - 30, y: start.y + 10 })
@@ -65,18 +72,18 @@ test('ein Ordner lässt sich ein kleines Stück verschieben', async ({ page }) =
 })
 
 test('Loslassen auf einem Fenster legt nichts darunter ab', async ({ page }) => {
-  await page.getByRole('button', { name: 'Über mich' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'Über mich' })
+  await page.getByRole('button', { name: 'About me' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'About me' })
   await settled(win)
-  const kontakt = page.getByRole('button', { name: 'Kontakt' })
+  const kontakt = page.getByRole('button', { name: 'Contact' })
   const before = await kontakt.boundingBox()
   await mouseDrag(page, await center(kontakt), await center(win))
   await expect.poll(() => kontakt.boundingBox()).toEqual(before)
 })
 
 test('Fenster rücken nach, wenn das Browserfenster schmaler wird', async ({ page }) => {
-  await page.getByRole('button', { name: 'Über mich' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'Über mich' })
+  await page.getByRole('button', { name: 'About me' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'About me' })
   await settled(win)
   await mouseDrag(page, await center(win.locator('.titlebar')), { x: 1150, y: 500 })
   await page.setViewportSize({ width: 800, height: 600 })

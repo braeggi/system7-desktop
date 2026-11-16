@@ -20,14 +20,14 @@
 
 <!-- Fährt die Maus über einen der Punkte, zeigen alle drei Farbe und Symbol – wie am Mac. -->
 <div class="lights">
-  <button type="button" class="light close" aria-label="Schließen" onclick={onclose}>
+  <button type="button" class="light close" aria-label="Close" onclick={onclose}>
     <svg viewBox="0 0 13 13" aria-hidden="true">
       <path class="fill" d={FILL} /><path d={RING} />
       <path class="sym" d="M4 4h1v1h1v1h1V5h1V4h1v1H8v1H7v1h1v1h1v1H8V8H7V7H6v1H5v1H4V8h1V7h1V6H5V5H4z" />
     </svg>
   </button>
   {#if onshade}
-    <button type="button" class="light shade" aria-label={shaded ? 'Ausrollen' : 'Einrollen'} onclick={onshade}>
+    <button type="button" class="light shade" aria-label={shaded ? 'Expand' : 'Collapse'} onclick={onshade}>
       <svg viewBox="0 0 13 13" aria-hidden="true">
         <path class="fill" d={FILL} /><path d={RING} />
         <path class="sym" d="M3 6h7v1H3z" />
@@ -35,7 +35,7 @@
     </button>
   {/if}
   {#if onmaximize}
-    <button type="button" class="light maximize" aria-label={maximized ? 'Wiederherstellen' : 'Maximieren'} onclick={onmaximize}>
+    <button type="button" class="light maximize" aria-label={maximized ? 'Restore' : 'Maximize'} onclick={onmaximize}>
       <svg viewBox="0 0 13 13" aria-hidden="true">
         <path class="fill" d={FILL} /><path d={RING} />
         <path class="sym" d="M6 3h1v3h3v1H7v3H6V7H3V6h3z" />

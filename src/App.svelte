@@ -7,9 +7,9 @@
   import Desktop from './lib/ui/Desktop.svelte'
   import MenuBar from './lib/ui/MenuBar.svelte'
   import MobileDesk from './lib/ui/mobile/MobileDesk.svelte'
-  import Splash from './lib/ui/Splash.svelte'
   import { viewport } from './lib/viewport.svelte'
-  import { itemsInTrash } from './lib/state/desk'
+  import { onMount } from 'svelte'
+  import { itemsInTrash, startDocument } from './lib/state/desk'
   import { WindowManager } from './lib/windows/windows.svelte'
 
   let { catalog, storage, site }: { catalog: Catalog; storage: Storage | null; site: SiteConfig } = $props()
@@ -24,6 +24,12 @@
   setDeskContext({ desk, windows, selection, actions, site })
 
   let confirmEmpty = $state(false)
+
+  // Begrüßung: das Startdokument aus seite.json öffnet sich einmal beim Laden
+  onMount(() => {
+    const id = startDocument(desk.state, desk.catalog, site.start)
+    if (id) actions.open({ kind: 'item', id })
+  })
 
   // Beim Wechsel zwischen Computer- und Handy-Darstellung bleiben keine Fenster hängen.
   let wasCompact = viewport.compact
@@ -56,7 +62,7 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<main aria-label="Schreibtisch" class="desk">
+<main aria-label="Desktop" class="desk">
   {#if viewport.compact}
     <MobileDesk />
   {:else}
@@ -64,11 +70,10 @@
   {/if}
 </main>
 <MenuBar onEmptyTrash={() => (confirmEmpty = true)} />
-<Splash titel={site.titel} />
 {#if confirmEmpty}
   <ConfirmDialog
-    message="Möchtest du den Papierkorb wirklich entleeren?"
-    confirmLabel="Entleeren"
+    message="Are you sure you want to empty the Trash?"
+    confirmLabel="Empty Trash"
     onconfirm={emptyTrash}
     oncancel={() => (confirmEmpty = false)}
   />

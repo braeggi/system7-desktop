@@ -31,7 +31,6 @@ async function openGuestbook() {
 beforeEach(() => {
   holder.server = new FakeServer('Hallo')
   vi.mocked(connectGuestbook).mockClear()
-  sessionStorage.setItem('schreibtisch:splash', '1')
   localStorage.clear()
 })
 
@@ -47,32 +46,32 @@ describe('Gästebuch', () => {
 
   it('zeigt den Text und speichert Eingaben', async () => {
     const { user, dialog } = await openGuestbook()
-    const field = within(dialog).getByRole('textbox', { name: 'Gästebuch' })
+    const field = within(dialog).getByRole('textbox', { name: 'Guestbook' })
     await waitFor(() => expect(field).toHaveValue('Hallo'))
     await user.type(field, ' Welt')
     await waitFor(() => expect(holder.server.text).toBe('Hallo Welt'), { timeout: 2500 })
-    await waitFor(() => expect(within(dialog).getByRole('status')).toHaveTextContent('Gespeichert'))
+    await waitFor(() => expect(within(dialog).getByRole('status')).toHaveTextContent('Saved'))
   })
 
   it('zeigt Keine Verbindung und ist dann schreibgeschützt', async () => {
     const { dialog } = await openGuestbook()
-    const field = within(dialog).getByRole('textbox', { name: 'Gästebuch' })
+    const field = within(dialog).getByRole('textbox', { name: 'Guestbook' })
     await waitFor(() => expect(field).toHaveValue('Hallo'))
     holder.server.setOnline(false)
-    await waitFor(() => expect(within(dialog).getByRole('status')).toHaveTextContent('Keine Verbindung'))
+    await waitFor(() => expect(within(dialog).getByRole('status')).toHaveTextContent('No connection'))
     expect(field).toHaveAttribute('readonly')
   })
 
   it('zeigt den Hinweis, wenn beim Öffnen nichts erreichbar ist', async () => {
     holder.server.online = false
     const { dialog } = await openGuestbook()
-    expect(await within(dialog).findByText('Das Gästebuch ist gerade nicht erreichbar. Versuch es später noch einmal.')).toBeInTheDocument()
+    expect(await within(dialog).findByText('The guestbook is not available right now. Please try again later.')).toBeInTheDocument()
     expect(within(dialog).queryByRole('textbox')).not.toBeInTheDocument()
   })
 
   it('hält die Schreibmarke bei Live-Text anderer', async () => {
     const { dialog } = await openGuestbook()
-    const field = within(dialog).getByRole('textbox', { name: 'Gästebuch' }) as HTMLTextAreaElement
+    const field = within(dialog).getByRole('textbox', { name: 'Guestbook' }) as HTMLTextAreaElement
     await waitFor(() => expect(field).toHaveValue('Hallo'))
     field.focus()
     field.setSelectionRange(3, 3)
@@ -84,7 +83,7 @@ describe('Gästebuch', () => {
   it('trennt die Verbindung beim Schließen', async () => {
     const { user, dialog } = await openGuestbook()
     await waitFor(() => expect(holder.server.activeSubscriptions).toBe(1))
-    await user.click(within(dialog).getByRole('button', { name: 'Schließen' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(holder.server.activeSubscriptions).toBe(0))
   })
 })

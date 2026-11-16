@@ -8,7 +8,7 @@
 <div class="about">
   <span class="mark"><MonogramIcon letters={site.monogramm} /></span>
   <strong>{site.titel}</strong>
-  <p>Eine Hommage an den Mac von 1991. Gebaut mit Svelte.</p>
+  <p>A tribute to the Mac of 1991. Built with Svelte.</p>
 </div>
 
 <style>

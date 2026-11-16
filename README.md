@@ -8,7 +8,7 @@ Besucher können:
 - Dokumente in Ordner legen
 - Dinge in den Papierkorb werfen
 
-Die Einrichtung jedes Besuchers bleibt in seinem Browser gespeichert (`localStorage`). Unter **Spezial → Schreibtisch aufräumen** kommt alles wieder an seinen ursprünglichen Platz.
+Die Einrichtung jedes Besuchers bleibt in seinem Browser gespeichert (`localStorage`). Unter **Special → Clean Up Desktop** kommt alles wieder an seinen ursprünglichen Platz.
 
 Auf dem Handy (Breite unter 700 px) liegen die Icons in einem Raster:
 - Antippen öffnet.
@@ -30,16 +30,18 @@ Alle Inhalte liegen im Ordner `inhalt/`.
 - **Titel:** Der Titel eines Textdokuments kommt aus dem Frontmatter, sonst aus dem Dateinamen:
   ```markdown
   ---
-  title: Über mich
+  title: About me
   ---
   # Hallo!
   ```
 - **Ordner haben nur eine Ebene.** Dateien in tieferen Unterordnern erscheinen im obersten Ordner.
 - **Links** auf externe Seiten (`https://…`) öffnen sich in einem neuen Tab.
-- **Bilder im Text** bettest du mit einem Pfad relativ zum Dokument ein, zum Beispiel in `inhalt/Projekte/Zweites Projekt.md`: `![Beschreibung](../Fotos/Berg.svg)`. Das Bild muss im Ordner `inhalt/` liegen. Es erscheint dann zusätzlich als eigenes Bilddokument. Bilder von anderen Webseiten (`https://…`) funktionieren ebenfalls.
+- **Bilder im Text** bettest du mit einem Pfad relativ zum Dokument ein, zum Beispiel in `inhalt/Projects/Second project.md`: `![Description](../Photos/Mountain.svg)`. Das Bild muss im Ordner `inhalt/` liegen. Es erscheint dann zusätzlich als eigenes Bilddokument. Bilder von anderen Webseiten (`https://…`) funktionieren ebenfalls.
 - **Bilddokumente** bauen sich beim Öffnen wie über ein altes Modem auf: in unregelmäßigen Streifen von oben nach unten, insgesamt etwa drei Sekunden. Wer im System „Bewegung reduzieren“ eingestellt hat, sieht das Bild sofort. Bilder im Text erscheinen immer sofort.
 - **Startpositionen:** `inhalt/schreibtisch.json` legt fest, wo die Icons beim ersten Besuch liegen. Die Positionen sind Pixel bezogen auf die `referenz`-Bildschirmgröße. Auf kleineren Bildschirmen werden sie verkleinert. Elemente ohne Eintrag bekommen automatisch einen freien Platz am rechten Rand.
-- **Seite:** `inhalt/seite.json` enthält den Titel, den der Startbildschirm und das Info-Fenster anzeigen, und das Monogramm in der Menüleiste (1–2 Buchstaben). Den Titel im Browser-Tab änderst du in `index.html`.
+- **Seite:** `inhalt/seite.json` enthält den Titel, den das Info-Fenster anzeigt, und das Monogramm in der Menüleiste (1–2 Buchstaben). Den Titel im Browser-Tab änderst du in `index.html`.
+- **Begrüßung:** `"start": "hello world.md"` in `inhalt/seite.json` öffnet dieses Dokument bei jedem Besuch von selbst, auf dem Computer als Fenster, auf dem Handy als Karte. Ohne den Eintrag öffnet sich nichts. Liegt das Dokument im Papierkorb, bleibt es ebenfalls zu.
+- **Smiley mit Cursor:** `cursor: true` im Frontmatter setzt ans Ende eines Textdokuments ein kleines Smiley mit blinkendem Textcursor. Zeilen ohne Leerzeile dazwischen brauchen am Zeilenende einen Backslash (`\`), sonst laufen sie zu einer Zeile zusammen.
 
 > **Hinweis:** Jedes Dokument wird über seinen Pfad erkannt. Wenn du eine Datei umbenennst oder in einen anderen Ordner verschiebst, ist sie für wiederkehrende Besucher ein neues Dokument und erscheint an ihrer Startposition. Gelöschte Dateien verschwinden auch aus gespeicherten Einrichtungen.
 
@@ -73,7 +75,7 @@ Heißt das Repository `<benutzer>.github.io` oder nutzt du eine eigene Domain, s
 
 Auf dem Schreibtisch kann ein Gästebuch liegen: ein einziges Textdokument, in das jeder Besucher frei schreiben kann. Alle sehen denselben Text, und wer es gleichzeitig offen hat, sieht Änderungen der anderen live. Gespeichert wird bei [Supabase](https://supabase.com), einer Datenbank als Dienst. Der kostenlose Tarif reicht.
 
-Das Gästebuch erscheint nur, wenn die Datei `inhalt/Gästebuch.gaestebuch` existiert **und** die Supabase-Zugangsdaten beim Bauen vorhanden sind. Ohne Zugangsdaten läuft die Seite ganz normal, nur ohne Gästebuch. Den Namen des Icons bestimmt der Dateiname, die Startposition steht wie bei allen anderen in `inhalt/schreibtisch.json`.
+Das Gästebuch erscheint nur, wenn die Datei `inhalt/Guestbook.gaestebuch` existiert **und** die Supabase-Zugangsdaten beim Bauen vorhanden sind. Ohne Zugangsdaten läuft die Seite ganz normal, nur ohne Gästebuch. Den Namen des Icons bestimmt der Dateiname, die Startposition steht wie bei allen anderen in `inhalt/schreibtisch.json`.
 
 ### Einrichten
 
@@ -99,7 +101,7 @@ Einzelne unpassende Stellen entfernst du, indem du in der Tabelle `gaestebuch` d
 
 ### Wach halten
 
-Supabase legt kostenlose Projekte nach etwa einer Woche ohne Zugriffe schlafen. Dann zeigt das Gästebuch „Keine Verbindung“. Der Workflow `.github/workflows/wach-halten.yml` fragt Supabase deshalb alle drei Tage kurz an. Er nutzt dieselben beiden Variablen und macht nichts, wenn sie fehlen.
+Supabase legt kostenlose Projekte nach etwa einer Woche ohne Zugriffe schlafen. Dann zeigt das Gästebuch „No connection“. Der Workflow `.github/workflows/wach-halten.yml` fragt Supabase deshalb alle drei Tage kurz an. Er nutzt dieselben beiden Variablen und macht nichts, wenn sie fehlen.
 
 - **Schläft das Projekt trotzdem:** Im Supabase-Dashboard das Projekt öffnen und **Restore project** wählen. Nach ein paar Minuten läuft das Gästebuch wieder.
 - **GitHub schaltet geplante Workflows ab**, wenn es 60 Tage lang keine Aktivität im Repository gab. GitHub schickt dazu vorher eine E-Mail. Unter **Actions → Gästebuch wach halten** lässt sich der Workflow mit **Enable workflow** wieder einschalten. Dort kannst du ihn auch jederzeit von Hand starten.
@@ -110,7 +112,7 @@ Die Seite speichert nur, was Besucher selbst ins Gästebuch schreiben. Erst wenn
 
 ### Abschalten
 
-Datei `inhalt/Gästebuch.gaestebuch` löschen und die Seite neu veröffentlichen. Die Einträge bleiben in Supabase erhalten.
+Datei `inhalt/Guestbook.gaestebuch` löschen und die Seite neu veröffentlichen. Die Einträge bleiben in Supabase erhalten.
 
 ## Hintergrund
 

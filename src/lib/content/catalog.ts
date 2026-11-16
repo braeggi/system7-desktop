@@ -39,9 +39,9 @@ export function buildCatalog(input: {
 
   for (const [path, raw] of Object.entries(input.markdown)) {
     addFile(path, (id, folder, name) => {
-      const { title, body } = parseFrontmatter(raw)
+      const { title, cursor, body } = parseFrontmatter(raw)
       const html = renderMarkdown(body, imageResolver(path, input.images))
-      return { id, kind: 'text', title: title ?? name, folder, html }
+      return { id, kind: 'text', title: title ?? name, folder, html, ...(cursor ? { cursor } : {}) }
     })
   }
   for (const [path, src] of Object.entries(input.images)) {
@@ -57,7 +57,7 @@ export function buildCatalog(input: {
   const positioned = Object.keys(positions)
   const rest = Object.keys(items)
     .filter((id) => !(id in positions))
-    .sort((a, b) => a.localeCompare(b, 'de'))
+    .sort((a, b) => a.localeCompare(b, 'en'))
 
   return {
     items,

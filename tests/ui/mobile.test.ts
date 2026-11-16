@@ -34,7 +34,7 @@ describe('Handy-Darstellung', () => {
     const doc = await screen.findByRole('dialog', { name: 'App' })
     expect(screen.getByRole('dialog', { name: 'Projekte' })).toBeInTheDocument()
 
-    await user.click(within(doc).getByRole('button', { name: 'Schließen' }))
+    await user.click(within(doc).getByRole('button', { name: 'Close' }))
     expect(screen.queryByRole('dialog', { name: 'App' })).not.toBeInTheDocument()
     expect(screen.getByRole('dialog', { name: 'Projekte' })).toBeInTheDocument()
   })

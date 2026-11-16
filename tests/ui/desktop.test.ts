@@ -37,7 +37,7 @@ describe('Desktop', () => {
     const user = setup()
     await user.dblClick(screen.getByRole('button', { name: 'Über mich' }))
     const dialog = await screen.findByRole('dialog', { name: 'Über mich' })
-    await user.click(within(dialog).getByRole('button', { name: 'Schließen' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }))
     expect(screen.queryByRole('dialog', { name: 'Über mich' })).not.toBeInTheDocument()
   })
 
@@ -68,15 +68,15 @@ describe('Desktop', () => {
 
   it('zeigt den Papierkorb', () => {
     setup()
-    expect(screen.getByRole('button', { name: 'Papierkorb' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Trash' })).toBeInTheDocument()
   })
   it('Grün maximiert und stellt wieder her', async () => {
     const user = setup()
     await user.dblClick(screen.getByRole('button', { name: 'Über mich' }))
     const dialog = await screen.findByRole('dialog', { name: 'Über mich' })
-    await user.click(within(dialog).getByRole('button', { name: 'Maximieren' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Maximize' }))
     expect(dialog.style.width).toBe(`${window.innerWidth}px`)
-    await user.click(within(dialog).getByRole('button', { name: 'Wiederherstellen' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Restore' }))
     expect(dialog.style.width).toBe('420px')
   })
 
@@ -84,9 +84,9 @@ describe('Desktop', () => {
     const user = setup()
     await user.dblClick(screen.getByRole('button', { name: 'Über mich' }))
     const dialog = await screen.findByRole('dialog', { name: 'Über mich' })
-    await user.click(within(dialog).getByRole('button', { name: 'Einrollen' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Collapse' }))
     expect(dialog).toHaveClass('shaded')
-    await user.click(within(dialog).getByRole('button', { name: 'Ausrollen' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Expand' }))
     expect(dialog).not.toHaveClass('shaded')
   })
 
@@ -95,7 +95,7 @@ describe('Desktop', () => {
     await user.dblClick(screen.getByRole('button', { name: 'Über mich' }))
     const dialog = await screen.findByRole('dialog', { name: 'Über mich' })
     await user.dblClick(dialog.querySelector('.titlebar')!)
-    expect(within(dialog).getByRole('button', { name: 'Wiederherstellen' })).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: 'Restore' })).toBeInTheDocument()
   })
   it('zeigt nur beim vordersten Fenster eine aktive Titelleiste', async () => {
     const user = setup()

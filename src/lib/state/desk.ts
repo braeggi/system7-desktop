@@ -94,6 +94,18 @@ export function emptyTrash(s: DeskState): DeskState {
   return { ...s, locations }
 }
 
+/**
+ * Das Dokument, das sich beim Laden öffnet: nur wenn es existiert und weder es selbst noch sein Ordner
+ * im Papierkorb liegt oder gelöscht ist. Ordner liegen immer auf dem Schreibtisch, nie in anderen Ordnern.
+ */
+export function startDocument(s: DeskState, c: Catalog, start: string | undefined): ItemId | null {
+  if (!start || !c.items[start]) return null
+  const loc = s.locations[start]
+  if (loc?.in === 'desk') return start
+  if (loc?.in === 'folder') return s.locations[loc.folder]?.in === 'desk' ? start : null
+  return null
+}
+
 export function itemsOnDesk(s: DeskState): ItemId[] {
   return s.gridOrder.filter((id) => s.locations[id]?.in === 'desk')
 }

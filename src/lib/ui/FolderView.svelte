@@ -11,4 +11,4 @@
   const ids = $derived(itemsInFolder(desk.state, folder, desk.catalog))
 </script>
 
-<ItemGrid {ids} drop="folder" folderId={folder} empty="Dieser Ordner ist leer." {onDragStart} {onDragEnd} />
+<ItemGrid {ids} drop="folder" folderId={folder} empty="This folder is empty." {onDragStart} {onDragEnd} />

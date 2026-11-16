@@ -33,7 +33,7 @@
     </svg>
     <p>{message}</p>
     <div class="buttons">
-      <button type="button" onclick={oncancel}>Abbrechen</button>
+      <button type="button" onclick={oncancel}>Cancel</button>
       <button type="button" class="default" bind:this={confirmButton} onclick={onconfirm}>{confirmLabel}</button>
     </div>
   </div>

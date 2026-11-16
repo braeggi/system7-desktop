@@ -9,4 +9,4 @@
   const ids = $derived(itemsInTrash(desk.state, desk.catalog))
 </script>
 
-<ItemGrid {ids} drop="trash" empty="Der Papierkorb ist leer." {onDragStart} {onDragEnd} />
+<ItemGrid {ids} drop="trash" empty="The Trash is empty." {onDragStart} {onDragEnd} />

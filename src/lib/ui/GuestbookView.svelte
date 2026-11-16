@@ -43,18 +43,18 @@
 
   const unavailable = $derived(failed || sync?.status === 'unavailable')
   const message = $derived.by(() => {
-    if (!sync) return 'Lädt …'
-    if (sync.notice === 'conflict') return 'Inzwischen geändert, neu geladen'
-    if (sync.full && sync.editable) return "Voll: höchstens 20'000 Zeichen"
+    if (!sync) return 'Loading …'
+    if (sync.notice === 'conflict') return 'Changed elsewhere, reloaded'
+    if (sync.full && sync.editable) return 'Full: at most 20,000 characters'
     switch (sync.status) {
       case 'loading':
-        return 'Lädt …'
+        return 'Loading …'
       case 'saving':
-        return 'Speichert …'
+        return 'Saving …'
       case 'saved':
-        return 'Gespeichert'
+        return 'Saved'
       case 'offline':
-        return 'Keine Verbindung'
+        return 'No connection'
       default:
         return ''
     }
@@ -63,12 +63,12 @@
 
 <div class="guestbook">
   {#if unavailable}
-    <p class="hint">Das Gästebuch ist gerade nicht erreichbar. Versuch es später noch einmal.</p>
+    <p class="hint">The guestbook is not available right now. Please try again later.</p>
   {:else}
     <textarea
       bind:this={area}
       class="field scroll-retro"
-      aria-label="Gästebuch"
+      aria-label="Guestbook"
       spellcheck="false"
       maxlength={MAX_LENGTH}
       readonly={!sync?.editable}

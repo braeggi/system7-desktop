@@ -9,6 +9,7 @@ const layout = {
 const markdown = {
   '/inhalt/Über mich.md': '---\ntitle: Über mich\n---\nHallo',
   '/inhalt/Kontakt.md': 'Mail',
+  '/inhalt/Hallo.md': '---\ntitle: hello.txt\ncursor: true\n---\nHi',
   '/inhalt/Projekte/Erstes Projekt.md': '---\ntitle: Projekt Eins\n---\nText',
   '/inhalt/Projekte/Unter/X.md': 'tief',
   '/inhalt/Projekte/Mit Bild.md': '![Berg](../Fotos/Berg.svg)',
@@ -32,6 +33,11 @@ describe('buildCatalog', () => {
   it('nimmt den Titel aus dem Frontmatter, sonst aus dem Dateinamen', () => {
     expect(catalog.items['Projekte/Erstes Projekt.md'].title).toBe('Projekt Eins')
     expect(catalog.items['Kontakt.md'].title).toBe('Kontakt')
+  })
+
+  it('übernimmt den Schalter cursor aus dem Frontmatter', () => {
+    expect(catalog.items['Hallo.md'].cursor).toBe(true)
+    expect(catalog.items['Über mich.md'].cursor).toBeUndefined()
   })
 
   it('rendert Markdown zu HTML', () => {
