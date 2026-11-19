@@ -1,6 +1,7 @@
 {
   "titel": "My Desktop",
   "monogramm": "M",
+  "autor": "Lucas Page",
   "start": "hello world.md",
   "papierkorb": {
     "hello world.md": { "spruch": "nice try.", "weigert": true },

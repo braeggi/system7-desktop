@@ -15,7 +15,7 @@ export interface Selection {
 
 const DEFAULT_SIZE: Size = { w: 420, h: 320 }
 const CONTAINER_SIZE: Size = { w: 360, h: 240 }
-const ABOUT_SIZE: Size = { w: 320, h: 200 }
+const ABOUT_SIZE: Size = { w: 460, h: 260 }
 const PROJECTS_SIZE: Size = { w: 560, h: 480 }
 
 // Rahmen (1 px je Seite) und Titelleiste (20 px), die das Fenster um das Bild legt

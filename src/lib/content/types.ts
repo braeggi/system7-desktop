@@ -52,6 +52,8 @@ export interface SiteConfig {
   monogramm: string
   /** Dokument aus `inhalt/`, das sich beim Laden von selbst öffnet */
   start?: string
+  /** Name für die Copyright-Zeile im Info-Fenster */
+  autor?: string
   /** Sprüche des Papierkorbs je Element, siehe TrashTalk */
   papierkorb?: Record<string, TrashRule>
 }
