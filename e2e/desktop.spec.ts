@@ -16,36 +16,29 @@ test('beim Laden öffnet sich hello world.txt mit Smiley und Cursor', async ({ p
 })
 
 test('ein Dokument in den Papierkorb ziehen bleibt nach dem Neuladen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'About me' })), await center(page.getByRole('button', { name: 'Trash' })))
-  await expect(page.getByRole('button', { name: 'About me' })).toHaveCount(0)
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'Sushi' })), await center(page.getByRole('button', { name: 'Trash' })))
+  await expect(page.getByRole('button', { name: 'Sushi' })).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Trash (full)' })).toBeVisible()
   await page.reload()
   await expect(page.getByRole('button', { name: 'Trash (full)' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'About me' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Sushi' })).toHaveCount(0)
 })
 
 test('ein Dokument in einen Ordner legen und wieder herausholen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Contact' })), await center(page.getByRole('button', { name: 'Projects' })))
-  await page.getByRole('button', { name: 'Projects' }).dblclick()
-  const folder = page.getByRole('dialog', { name: 'Projects' })
-  await expect(folder.getByRole('button', { name: 'Contact' })).toBeVisible()
+  await mouseDrag(page, await center(page.getByRole('button', { name: 'Sushi' })), await center(page.getByRole('button', { name: 'Photos' })))
+  await page.getByRole('button', { name: 'Photos' }).dblclick()
+  const folder = page.getByRole('dialog', { name: 'Photos' })
+  await expect(folder.getByRole('button', { name: 'Sushi' })).toBeVisible()
   await settled(folder)
 
-  await mouseDrag(page, await center(folder.getByRole('button', { name: 'Contact' })), { x: 600, y: 600 })
-  await expect(folder.getByRole('button', { name: 'Contact' })).toHaveCount(0)
-  await expect(desk(page).getByRole('button', { name: 'Contact' })).toBeVisible()
-})
-
-test('ein Ordner lässt sich nicht in einen Ordner legen', async ({ page }) => {
-  await mouseDrag(page, await center(page.getByRole('button', { name: 'Projects' })), await center(page.getByRole('button', { name: 'Photos' })))
-  await expect(page.getByRole('button', { name: 'Projects' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Photos' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Trash' })).toBeVisible()
+  await mouseDrag(page, await center(folder.getByRole('button', { name: 'Sushi' })), { x: 600, y: 600 })
+  await expect(folder.getByRole('button', { name: 'Sushi' })).toHaveCount(0)
+  await expect(desk(page).getByRole('button', { name: 'Sushi' })).toBeVisible()
 })
 
 test('ein Fenster bleibt beim Wegziehen greifbar', async ({ page }) => {
-  await page.getByRole('button', { name: 'About me' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'About me' })
+  await page.getByRole('button', { name: 'hello world.txt' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'hello world.txt' })
   await expect(win).toBeVisible()
   await settled(win)
   const title = win.locator('.titlebar')
@@ -63,7 +56,7 @@ test('ein verschobenes Icon behält seinen Platz', async ({ page }) => {
 })
 
 test('ein Ordner lässt sich ein kleines Stück verschieben', async ({ page }) => {
-  const folder = page.getByRole('button', { name: 'Projects' })
+  const folder = page.getByRole('button', { name: 'Photos' })
   const before = (await folder.boundingBox())!
   const start = await center(folder)
   await mouseDrag(page, start, { x: start.x - 30, y: start.y + 10 })
@@ -72,18 +65,18 @@ test('ein Ordner lässt sich ein kleines Stück verschieben', async ({ page }) =
 })
 
 test('Loslassen auf einem Fenster legt nichts darunter ab', async ({ page }) => {
-  await page.getByRole('button', { name: 'About me' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'About me' })
+  await page.getByRole('button', { name: 'hello world.txt' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'hello world.txt' })
   await settled(win)
-  const kontakt = page.getByRole('button', { name: 'Contact' })
-  const before = await kontakt.boundingBox()
-  await mouseDrag(page, await center(kontakt), await center(win))
-  await expect.poll(() => kontakt.boundingBox()).toEqual(before)
+  const sushi = page.getByRole('button', { name: 'Sushi' })
+  const before = await sushi.boundingBox()
+  await mouseDrag(page, await center(sushi), await center(win))
+  await expect.poll(() => sushi.boundingBox()).toEqual(before)
 })
 
 test('Fenster rücken nach, wenn das Browserfenster schmaler wird', async ({ page }) => {
-  await page.getByRole('button', { name: 'About me' }).dblclick()
-  const win = page.getByRole('dialog', { name: 'About me' })
+  await page.getByRole('button', { name: 'hello world.txt' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'hello world.txt' })
   await settled(win)
   await mouseDrag(page, await center(win.locator('.titlebar')), { x: 1150, y: 500 })
   await page.setViewportSize({ width: 800, height: 600 })
@@ -105,3 +98,35 @@ test('auf freier Fläche zieht die Maus ein Auswahlrechteck auf', async ({ page 
   await page.mouse.up()
   await expect(rect).toHaveCount(0)
 })
+
+test('der Papierkorb weigert sich bei hello world.txt', async ({ page }) => {
+  const doc = page.getByRole('button', { name: 'hello world.txt' })
+  const before = await doc.boundingBox()
+  await mouseDrag(page, await center(doc), await center(page.getByRole('button', { name: 'Trash' })))
+  await expect(page.getByTestId('papierkorb-spruch')).toHaveText('nice try.')
+  await expect(page.getByRole('button', { name: 'Trash' })).toBeVisible()
+  expect(await doc.boundingBox()).toEqual(before)
+})
+
+test('der Papierkorb weigert sich bei pulp.gif, mit Spruch', async ({ page }) => {
+  const gif = page.getByRole('button', { name: 'pulp' })
+  const before = await gif.boundingBox()
+  await mouseDrag(page, await center(gif), await center(page.getByRole('button', { name: 'Trash' })))
+  await expect(page.getByTestId('papierkorb-spruch')).toHaveText("say 'trash' again. I dare you.")
+  await expect(page.getByRole('button', { name: 'Trash' })).toBeVisible()
+  expect(await gif.boundingBox()).toEqual(before)
+})
+
+test('Project Resources zeigt die Projekte mit Links in einen neuen Tab', async ({ page }) => {
+  await page.getByRole('button', { name: 'Project' }).dblclick()
+  const win = page.getByRole('dialog', { name: 'Project' })
+  await expect(win.getByRole('heading', { name: 'Project Resources' })).toBeVisible()
+  await expect(win.getByText('Things Mr. Claude and I built. Click to try.')).toBeVisible()
+  const tichu = win.getByRole('link', { name: /Tichu Score Board/ })
+  await expect(tichu).toHaveAttribute('href', 'https://tichu-score-board.vercel.app')
+  await expect(tichu).toHaveAttribute('target', '_blank')
+  await expect(win.getByRole('link', { name: /Swiss Temp Dashboard/ })).toBeVisible()
+  // Die Projektbilder liegen nicht als eigene Icons auf dem Schreibtisch
+  await expect(page.getByRole('button', { name: 'tichu' })).toHaveCount(0)
+})
+

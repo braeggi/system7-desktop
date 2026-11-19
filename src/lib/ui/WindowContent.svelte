@@ -5,6 +5,7 @@
   import FolderView from './FolderView.svelte'
   import GuestbookView from './GuestbookView.svelte'
   import ImageViewer from './ImageViewer.svelte'
+  import ProjectsView from './ProjectsView.svelte'
   import TextViewer from './TextViewer.svelte'
   import TrashView from './TrashView.svelte'
 
@@ -23,6 +24,8 @@
   <FolderView folder={item.id} {onDragStart} {onDragEnd} />
 {:else if item?.kind === 'guestbook'}
   <GuestbookView />
+{:else if item?.kind === 'projects' && item.projects}
+  <ProjectsView projects={item.projects} />
 {:else if item?.kind === 'image' && item.src}
   <ImageViewer src={item.src} title={item.title} />
 {:else if item}

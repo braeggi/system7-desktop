@@ -1,1 +1,11 @@
-{ "titel": "My Desktop", "monogramm": "M", "start": "hello world.md" }
+{
+  "titel": "My Desktop",
+  "monogramm": "M",
+  "start": "hello world.md",
+  "papierkorb": {
+    "hello world.md": { "spruch": "nice try.", "weigert": true },
+    "pulp.gif": { "spruch": "say 'trash' again. I dare you.", "weigert": true },
+    "Sushi.webp": { "spruch": "more wasabi next time." },
+    "Guestbook.gaestebuch": { "spruch": "not allowed, guestbook is for all", "weigert": true }
+  }
+}

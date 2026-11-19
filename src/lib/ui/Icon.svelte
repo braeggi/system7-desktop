@@ -4,6 +4,7 @@
   import FolderIcon from './icons/FolderIcon.svelte'
   import GuestbookIcon from './icons/GuestbookIcon.svelte'
   import ImageIcon from './icons/ImageIcon.svelte'
+  import ProjectsIcon from './icons/ProjectsIcon.svelte'
   import TextIcon from './icons/TextIcon.svelte'
   import TrashIcon from './icons/TrashIcon.svelte'
 
@@ -59,7 +60,7 @@
   }}
 >
   <span class="glyph">
-    {#if kind === 'folder'}<FolderIcon />{:else if kind === 'image'}<ImageIcon />{:else if kind === 'guestbook'}<GuestbookIcon />{:else if kind === 'trash'}<TrashIcon
+    {#if kind === 'folder'}<FolderIcon />{:else if kind === 'image'}<ImageIcon />{:else if kind === 'guestbook'}<GuestbookIcon />{:else if kind === 'projects'}<ProjectsIcon />{:else if kind === 'trash'}<TrashIcon
         {full}
       />{:else}<TextIcon />{/if}
   </span>

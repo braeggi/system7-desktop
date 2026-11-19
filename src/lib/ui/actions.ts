@@ -6,6 +6,7 @@ import { itemsInFolder } from '../state/desk'
 import type { DeskStore } from '../state/desk.svelte'
 import { viewport } from '../viewport.svelte'
 import { MIN_WIN, type WindowContent, type WindowManager } from '../windows/windows.svelte'
+import { TrashTalk } from './trashTalk.svelte'
 import { rectOf } from './zoom'
 
 export interface Selection {
@@ -15,6 +16,7 @@ export interface Selection {
 const DEFAULT_SIZE: Size = { w: 420, h: 320 }
 const CONTAINER_SIZE: Size = { w: 360, h: 240 }
 const ABOUT_SIZE: Size = { w: 320, h: 200 }
+const PROJECTS_SIZE: Size = { w: 560, h: 480 }
 
 // Rahmen (1 px je Seite) und Titelleiste (20 px), die das Fenster um das Bild legt
 const IMAGE_CHROME: Size = { w: 2, h: 22 }
@@ -44,7 +46,7 @@ function imageSize(src: string): Promise<Size> {
   })
 }
 
-export function createActions(desk: DeskStore, windows: WindowManager, selection: Selection) {
+export function createActions(desk: DeskStore, windows: WindowManager, selection: Selection, trash = new TrashTalk()) {
   const isDocument = (c: WindowContent) => c.kind === 'item' && desk.catalog.items[c.id]?.kind !== 'folder'
 
   function sizeFor(c: WindowContent): Size | Promise<Size> {
@@ -52,6 +54,7 @@ export function createActions(desk: DeskStore, windows: WindowManager, selection
     if (c.kind === 'trash') return CONTAINER_SIZE
     const item = desk.catalog.items[c.id]
     if (item.kind === 'folder') return CONTAINER_SIZE
+    if (item.kind === 'projects') return PROJECTS_SIZE
     if (item.kind === 'image' && item.src) return imageSize(item.src)
     return DEFAULT_SIZE
   }
@@ -83,6 +86,7 @@ export function createActions(desk: DeskStore, windows: WindowManager, selection
     if (!action) return false
     switch (action.type) {
       case 'moveToTrash':
+        if (!trash.receive(id)) return false
         windows.closeForItems([id, ...itemsInFolder(desk.state, id, desk.catalog)])
         desk.moveToTrash(id)
         break
@@ -123,6 +127,7 @@ export interface DeskContext {
   selection: Selection
   actions: Actions
   site: SiteConfig
+  trash: TrashTalk
 }
 
 export function setDeskContext(ctx: DeskContext) {

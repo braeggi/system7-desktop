@@ -1,5 +1,6 @@
+import type { TrashRule } from '../ui/trashTalk.svelte'
 export type ItemId = string
-export type ItemKind = 'text' | 'image' | 'folder' | 'guestbook'
+export type ItemKind = 'text' | 'image' | 'folder' | 'guestbook' | 'projects'
 
 export interface Point {
   x: number
@@ -20,6 +21,22 @@ export interface CatalogItem {
   src?: string
   /** Smiley und blinkender Cursor am Textende (Frontmatter `cursor: true`) */
   cursor?: boolean
+  /** Inhalt einer Projektübersicht (`*.projekte`) */
+  projects?: ProjectOverview
+}
+
+export interface ProjectEntry {
+  name: string
+  text: string
+  link: string
+  /** URL des Bildes, falls es eines gibt */
+  image?: string
+}
+
+export interface ProjectOverview {
+  title: string
+  subtitle: string
+  entries: ProjectEntry[]
 }
 
 export interface Catalog {
@@ -33,6 +50,8 @@ export interface SiteConfig {
   monogramm: string
   /** Dokument aus `inhalt/`, das sich beim Laden von selbst öffnet */
   start?: string
+  /** Sprüche des Papierkorbs je Element, siehe TrashTalk */
+  papierkorb?: Record<string, TrashRule>
 }
 
 export interface LayoutFile {

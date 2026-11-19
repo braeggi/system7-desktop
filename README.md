@@ -36,11 +36,29 @@ Alle Inhalte liegen im Ordner `inhalt/`.
   ```
 - **Ordner haben nur eine Ebene.** Dateien in tieferen Unterordnern erscheinen im obersten Ordner.
 - **Links** auf externe Seiten (`https://…`) öffnen sich in einem neuen Tab.
-- **Bilder im Text** bettest du mit einem Pfad relativ zum Dokument ein, zum Beispiel in `inhalt/Projects/Second project.md`: `![Description](../Photos/Mountain.svg)`. Das Bild muss im Ordner `inhalt/` liegen. Es erscheint dann zusätzlich als eigenes Bilddokument. Bilder von anderen Webseiten (`https://…`) funktionieren ebenfalls.
+- **Bilder im Text** bettest du mit einem Pfad relativ zum Dokument ein, zum Beispiel in einem Dokument `inhalt/Projects/Project.md`: `![Description](../Photos/Mountain.svg)`. Das Bild muss im Ordner `inhalt/` liegen. Es erscheint dann zusätzlich als eigenes Bilddokument. Bilder von anderen Webseiten (`https://…`) funktionieren ebenfalls.
 - **Bilddokumente** bauen sich beim Öffnen wie über ein altes Modem auf: in unregelmäßigen Streifen von oben nach unten, insgesamt etwa drei Sekunden. Wer im System „Bewegung reduzieren“ eingestellt hat, sieht das Bild sofort. Bilder im Text erscheinen immer sofort.
 - **Startpositionen:** `inhalt/schreibtisch.json` legt fest, wo die Icons beim ersten Besuch liegen. Die Positionen sind Pixel bezogen auf die `referenz`-Bildschirmgröße. Auf kleineren Bildschirmen werden sie verkleinert. Elemente ohne Eintrag bekommen automatisch einen freien Platz am rechten Rand.
 - **Seite:** `inhalt/seite.json` enthält den Titel, den das Info-Fenster anzeigt, und das Monogramm in der Menüleiste (1–2 Buchstaben). Den Titel im Browser-Tab änderst du in `index.html`.
 - **Begrüßung:** `"start": "hello world.md"` in `inhalt/seite.json` öffnet dieses Dokument bei jedem Besuch von selbst, auf dem Computer als Fenster, auf dem Handy als Karte. Ohne den Eintrag öffnet sich nichts. Liegt das Dokument im Papierkorb, bleibt es ebenfalls zu.
+- **Project Resources:** Eine Datei `*.projekte` (JSON) wird zu einem eigenen Fenster mit Titel, Untertitel und Projekten in zwei Spalten. Jedes Projekt hat Bild, Namen und einen Satz, ein Klick öffnet den Link im neuen Tab. Bilder liegen relativ zur Datei, etwa in `inhalt/bilder/`, und erscheinen nicht als eigene Icons:
+  ```json
+  {
+    "titel": "Project Resources",
+    "untertitel": "Various projects to explore.",
+    "projekte": [
+      { "name": "Tichu Score Board", "text": "Ein Satz dazu.", "link": "https://…", "bild": "bilder/tichu.png" }
+    ]
+  }
+  ```
+  Ein neues Projektbild rastert `scripts/projektbild.py` aus einem Screenshot in Handybreite, im selben Schwarz-Weiß wie die Seite: `python3 scripts/projektbild.py screenshot.png inhalt/bilder/neu.png`.
+- **Papierkorb mit Meinung:** Bei jedem Wurf wackelt der Papierkorb, der Deckel hüpft und ein paar Papierknäuel fliegen heraus (bei „Bewegung reduzieren“ nicht). Unter `"papierkorb"` in `inhalt/seite.json` bekommt ein Element einen Spruch, der kurz in einer Sprechblase erscheint. Mit `"weigert": true` nimmt der Papierkorb es gar nicht erst an:
+  ```json
+  "papierkorb": {
+    "hello world.md": { "spruch": "nice try.", "weigert": true },
+    "pulp.gif": { "spruch": "Royale with trash." }
+  }
+  ```
 - **Smiley mit Cursor:** `cursor: true` im Frontmatter setzt ans Ende eines Textdokuments ein kleines Smiley mit blinkendem Textcursor. Zeilen ohne Leerzeile dazwischen brauchen am Zeilenende einen Backslash (`\`), sonst laufen sie zu einer Zeile zusammen.
 
 > **Hinweis:** Jedes Dokument wird über seinen Pfad erkannt. Wenn du eine Datei umbenennst oder in einen anderen Ordner verschiebst, ist sie für wiederkehrende Besucher ein neues Dokument und erscheint an ihrer Startposition. Gelöschte Dateien verschwinden auch aus gespeicherten Einrichtungen.

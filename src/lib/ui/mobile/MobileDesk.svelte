@@ -2,6 +2,7 @@
   import { isTrashFull, itemsOnDesk } from '../../state/desk'
   import { getDeskContext } from '../actions'
   import Icon from '../Icon.svelte'
+  import TrashFx from '../TrashFx.svelte'
   import MobileSheet from './MobileSheet.svelte'
 
   const { desk, windows, actions } = getDeskContext()
@@ -29,21 +30,23 @@
   </div>
 
   <div class="trash">
-    <Icon
-      title="Trash"
-      label={full ? 'Trash (full)' : 'Trash'}
-      kind="trash"
-      {full}
-      drop="trash"
-      drag={{
-        id: 'trash',
-        fixed: true,
-        canDrop: () => false,
-        onDrop: () => {},
-        onTap: (_type, node) => actions.open({ kind: 'trash' }, node),
-      }}
-      onopen={(el) => actions.open({ kind: 'trash' }, el)}
-    />
+    <TrashFx>
+      <Icon
+        title="Trash"
+        label={full ? 'Trash (full)' : 'Trash'}
+        kind="trash"
+        {full}
+        drop="trash"
+        drag={{
+          id: 'trash',
+          fixed: true,
+          canDrop: () => false,
+          onDrop: () => {},
+          onTap: (_type, node) => actions.open({ kind: 'trash' }, node),
+        }}
+        onopen={(el) => actions.open({ kind: 'trash' }, el)}
+      />
+    </TrashFx>
   </div>
 
   {#each windows.sheets as sheet, level (sheet.key)}

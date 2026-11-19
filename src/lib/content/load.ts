@@ -10,11 +10,12 @@ const markdown = import.meta.glob<string>(['/inhalt/**/*.md', '/inhalt/**/*.MD']
   eager: true,
 })
 // Alle übrigen Dateien als URL; welche davon Bilder sind, entscheidet buildCatalog (ohne Rücksicht auf Groß-/Kleinschreibung).
-const images = import.meta.glob<string>(['/inhalt/**/*', '!/inhalt/**/*.{md,MD,json}'], {
+const projects = import.meta.glob<string>('/inhalt/**/*.projekte', { query: '?raw', import: 'default', eager: true })
+const images = import.meta.glob<string>(['/inhalt/**/*', '!/inhalt/**/*.{md,MD,json,projekte}'], {
   query: '?url',
   import: 'default',
   eager: true,
 })
 
-export const catalog = buildCatalog({ markdown, images, layout: layout as LayoutFile, guestbook: guestbookConfig !== null })
+export const catalog = buildCatalog({ markdown, images, projects, layout: layout as LayoutFile, guestbook: guestbookConfig !== null })
 export const site: SiteConfig = siteConfig

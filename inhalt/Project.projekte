@@ -1,0 +1,18 @@
+{
+  "titel": "Project Resources",
+  "untertitel": "Things Mr. Claude and I built. Click to try.",
+  "projekte": [
+    {
+      "name": "Tichu Score Board",
+      "text": "Keeps score on Tichu card nights, with players and stats.",
+      "link": "https://tichu-score-board.vercel.app",
+      "bild": "bilder/tichu.png"
+    },
+    {
+      "name": "Swiss Temp Dashboard",
+      "text": "Compares today's temperature with every day since 1864.",
+      "link": "https://swiss-temp-dashboard.vercel.app",
+      "bild": "bilder/swiss-temp.png"
+    }
+  ]
+}

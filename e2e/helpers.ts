@@ -26,6 +26,8 @@ export async function settled(dialog: Locator) {
   await dialog.evaluate(async (el) => {
     // Svelte startet den Übergang erst nach dem Einfügen; zwei Frames warten, bis die Animation existiert.
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
-    await Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished))
+    // Endlose Animationen wie der blinkende Cursor enden nie und zählen nicht.
+    const finite = el.getAnimations({ subtree: true }).filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+    await Promise.all(finite.map((a) => a.finished))
   })
 }

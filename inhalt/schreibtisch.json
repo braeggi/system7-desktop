@@ -1,13 +1,11 @@
 {
   "referenz": { "breite": 1440, "hoehe": 900 },
   "positionen": {
-    "About me.md": { "x": 1320, "y": 48 },
-    "Projects": { "x": 1320, "y": 136 },
-    "Photos": { "x": 1320, "y": 224 },
-    "Contact.md": { "x": 1320, "y": 312 },
-    "Sushi.webp": { "x": 1320, "y": 400 },
-    "Guestbook.gaestebuch": { "x": 1320, "y": 488 },
-    "pulp.gif": { "x": 1320, "y": 576 },
-    "hello world.md": { "x": 1320, "y": 664 }
+    "Project.projekte": { "x": 1320, "y": 48 },
+    "Photos": { "x": 1320, "y": 136 },
+    "Sushi.webp": { "x": 1320, "y": 224 },
+    "Guestbook.gaestebuch": { "x": 1320, "y": 312 },
+    "pulp.gif": { "x": 1320, "y": 400 },
+    "hello world.md": { "x": 1320, "y": 488 }
   }
 }

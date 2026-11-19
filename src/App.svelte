@@ -10,6 +10,7 @@
   import { viewport } from './lib/viewport.svelte'
   import { onMount } from 'svelte'
   import { itemsInTrash, startDocument } from './lib/state/desk'
+  import { TrashTalk } from './lib/ui/trashTalk.svelte'
   import { WindowManager } from './lib/windows/windows.svelte'
 
   let { catalog, storage, site }: { catalog: Catalog; storage: Storage | null; site: SiteConfig } = $props()
@@ -19,9 +20,11 @@
   const desk = new DeskStore(catalog, storage)
   const windows = new WindowManager()
   const selection: Selection = $state({ id: null })
-  const actions = createActions(desk, windows, selection)
   // svelte-ignore state_referenced_locally
-  setDeskContext({ desk, windows, selection, actions, site })
+  const trash = new TrashTalk(site.papierkorb)
+  const actions = createActions(desk, windows, selection, trash)
+  // svelte-ignore state_referenced_locally
+  setDeskContext({ desk, windows, selection, actions, site, trash })
 
   let confirmEmpty = $state(false)
 

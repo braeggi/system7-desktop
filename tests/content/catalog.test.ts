@@ -84,4 +84,46 @@ describe('buildCatalog', () => {
     const c = buildCatalog({ markdown: {}, images: { '/inhalt/Gästebuch.gaestebuch': '/assets/g' }, layout })
     expect(c.items['Gästebuch.gaestebuch']).toBeUndefined()
   })
+
+  describe('Projektübersicht (*.projekte)', () => {
+    const projekte = {
+      '/inhalt/Project Resources.projekte': JSON.stringify({
+        titel: 'Project Resources',
+        untertitel: 'Various projects to explore.',
+        projekte: [
+          { name: 'Tichu', text: 'Score.', link: 'https://tichu.example', bild: 'bilder/tichu.png' },
+          { name: 'Temp', text: 'Weather.', link: 'https://temp.example' },
+        ],
+      }),
+      '/inhalt/Kaputt.projekte': '{ nicht json',
+    }
+    const bilder = { '/inhalt/bilder/tichu.png': '/assets/tichu-1.png', '/inhalt/Fotos/Berg.svg': '/assets/Berg-123.svg' }
+    const c = buildCatalog({ markdown: {}, images: bilder, projects: projekte, layout })
+
+    it('macht daraus eine Projektübersicht mit Titel, Untertitel und Projekten', () => {
+      expect(c.items['Project Resources.projekte']).toMatchObject({
+        kind: 'projects',
+        title: 'Project Resources',
+        folder: null,
+        projects: {
+          title: 'Project Resources',
+          subtitle: 'Various projects to explore.',
+          entries: [
+            { name: 'Tichu', text: 'Score.', link: 'https://tichu.example', image: '/assets/tichu-1.png' },
+            { name: 'Temp', text: 'Weather.', link: 'https://temp.example' },
+          ],
+        },
+      })
+    })
+
+    it('zeigt Bilder der Übersicht nicht als eigene Bilddokumente', () => {
+      expect(c.items['bilder/tichu.png']).toBeUndefined()
+      expect(c.items['bilder']).toBeUndefined()
+      expect(c.items['Fotos/Berg.svg']).toMatchObject({ kind: 'image' })
+    })
+
+    it('überspringt Dateien mit ungültigem JSON', () => {
+      expect(c.items['Kaputt.projekte']).toBeUndefined()
+    })
+  })
 })

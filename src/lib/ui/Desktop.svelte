@@ -6,6 +6,7 @@
   import Icon from './Icon.svelte'
   import Marquee from './Marquee.svelte'
   import { titleOf } from './title'
+  import TrashFx from './TrashFx.svelte'
   import Window from './Window.svelte'
   import WindowContent from './WindowContent.svelte'
 
@@ -62,24 +63,25 @@
     />
   {/each}
 
-  <Icon
-    title="Trash"
-    label={full ? 'Trash (full)' : 'Trash'}
-    kind="trash"
-    {full}
-    drop="trash"
-    style="position:absolute;left:{trash.x}px;top:{trash.y}px"
-    drag={{
-      id: 'trash',
-      fixed: true,
-      canDrop: () => false,
-      onDrop: () => {},
-      onTap: (pointerType, node) => {
-        if (pointerType !== 'mouse') actions.open({ kind: 'trash' }, node)
-      },
-    }}
-    onopen={(el) => actions.open({ kind: 'trash' }, el)}
-  />
+  <TrashFx style="position:absolute;left:{trash.x}px;top:{trash.y}px">
+    <Icon
+      title="Trash"
+      label={full ? 'Trash (full)' : 'Trash'}
+      kind="trash"
+      {full}
+      drop="trash"
+      drag={{
+        id: 'trash',
+        fixed: true,
+        canDrop: () => false,
+        onDrop: () => {},
+        onTap: (pointerType, node) => {
+          if (pointerType !== 'mouse') actions.open({ kind: 'trash' }, node)
+        },
+      }}
+      onopen={(el) => actions.open({ kind: 'trash' }, el)}
+    />
+  </TrashFx>
 
   {#each windows.windows as win (win.key)}
     <Window {win} title={titleOf(win.content, desk.catalog)}>
