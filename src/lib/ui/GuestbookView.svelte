@@ -5,6 +5,9 @@
   import { GuestbookSync, MAX_LENGTH } from '../guestbook/sync.svelte'
   import { safeStorage } from '../state/persist'
 
+  /** Feste Anleitung aus der .gaestebuch-Datei; steht über dem gemeinsamen Text und lässt sich nicht bearbeiten. */
+  let { intro = '' }: { intro?: string } = $props()
+
   let sync = $state<GuestbookSync | null>(null)
   let failed = $state(false)
   let area = $state<HTMLTextAreaElement | null>(null)
@@ -62,6 +65,20 @@
 </script>
 
 <div class="guestbook">
+  {#if intro}
+    <!-- Hinweis wie eine Meldung in System 6: Kasten mit Schatten auf gepunktetem Streifen -->
+    <div class="intro">
+      <div class="note">
+        <svg class="pencil" viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            fill="#000"
+            d="M11 0h2v1h-2zM10 1h1v1h-1zM13 1h1v1h-1zM9 2h1v1h-1zM11 2h3v1h-3zM8 3h1v1h-1zM10 3h1v1h-1zM12 3h1v1h-1zM7 4h1v1h-1zM9 4h1v1h-1zM11 4h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM5 6h1v1h-1zM7 6h1v1h-1zM9 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM8 7h1v1h-1zM3 8h1v1h-1zM5 8h1v1h-1zM7 8h1v1h-1zM2 9h4v1h-4zM7 9h1v1h-1zM2 10h1v1h-1zM5 10h2v1h-2zM2 11h1v1h-1zM5 11h1v1h-1zM2 12h3v1h-3zM2 13h2v1h-2zM2 14h1v1h-1z"
+          />
+        </svg>
+        <div class="words">{@html intro}</div>
+      </div>
+    </div>
+  {/if}
   {#if unavailable}
     <p class="hint">The guestbook is not available right now. Please try again later.</p>
   {:else}
@@ -84,6 +101,45 @@
     display: flex;
     flex-direction: column;
     background: #fff;
+  }
+  /* Anleitung: fest oben, als Hinweiskasten auf einem fein gepunkteten Streifen */
+  .intro {
+    flex: none;
+    padding: 10px 12px 12px;
+    background: var(--dither-25-overlay), #fff;
+    border-bottom: var(--frame);
+  }
+  .note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #fff;
+    border: var(--frame);
+    box-shadow: 2px 2px 0 #000;
+  }
+  .pencil {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+  .words {
+    font-family: var(--font-text);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .words :global(p) {
+    margin: 0;
+  }
+  .words :global(p + p) {
+    margin-top: 0.3em;
+  }
+  /* Fett gesetzte Wörter in Chicago, wie Überschriften auf dem alten Mac */
+  .words :global(strong) {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 400;
   }
   .field {
     flex: 1;

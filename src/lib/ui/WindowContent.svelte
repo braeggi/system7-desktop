@@ -23,7 +23,7 @@
 {:else if item?.kind === 'folder'}
   <FolderView folder={item.id} {onDragStart} {onDragEnd} />
 {:else if item?.kind === 'guestbook'}
-  <GuestbookView />
+  <GuestbookView intro={item.html} />
 {:else if item?.kind === 'projects' && item.projects}
   <ProjectsView projects={item.projects} />
 {:else if item?.kind === 'image' && item.src}

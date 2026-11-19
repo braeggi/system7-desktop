@@ -15,7 +15,7 @@ vi.mock('../../src/lib/guestbook/connect', () => ({
 const GB = 'Gästebuch.gaestebuch'
 const catalog: Catalog = {
   ...fixtureCatalog,
-  items: { ...fixtureCatalog.items, [GB]: { id: GB, kind: 'guestbook', title: 'Gästebuch', folder: null } },
+  items: { ...fixtureCatalog.items, [GB]: { id: GB, kind: 'guestbook', title: 'Gästebuch', folder: null, html: '<p>Sign with your name.</p>' } },
   order: [...fixtureCatalog.order, GB],
 }
 const site = { titel: 'Test', monogramm: 'T' }
@@ -86,4 +86,20 @@ describe('Gästebuch', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(holder.server.activeSubscriptions).toBe(0))
   })
+
+  it('zeigt die feste Anleitung über dem gemeinsamen Text, nicht darin', async () => {
+    const { dialog } = await openGuestbook()
+    const field = within(dialog).getByRole('textbox', { name: 'Guestbook' }) as HTMLTextAreaElement
+    await waitFor(() => expect(field.value).toBe('Hallo'))
+    expect(within(dialog).getByText('Sign with your name.')).toBeInTheDocument()
+    expect(field.value).not.toContain('Sign with your name.')
+  })
+
+  it('zeigt die Anleitung auch, wenn das Gästebuch nicht erreichbar ist', async () => {
+    vi.mocked(connectGuestbook).mockRejectedValueOnce(new Error('weg'))
+    const { dialog } = await openGuestbook()
+    expect(await within(dialog).findByText('The guestbook is not available right now. Please try again later.')).toBeInTheDocument()
+    expect(within(dialog).getByText('Sign with your name.')).toBeInTheDocument()
+  })
 })
+

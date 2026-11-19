@@ -78,12 +78,18 @@ describe('buildCatalog', () => {
   })
 
   it('macht .gaestebuch-Dateien zum Gästebuch, wenn es eingerichtet ist', () => {
-    const c = buildCatalog({ markdown: {}, images: { '/inhalt/Gästebuch.gaestebuch': '/assets/g' }, layout, guestbook: true })
+    const c = buildCatalog({ markdown: {}, images: {}, guestbooks: { '/inhalt/Gästebuch.gaestebuch': '' }, layout, guestbook: true })
     expect(c.items['Gästebuch.gaestebuch']).toMatchObject({ kind: 'guestbook', title: 'Gästebuch', folder: null })
+    expect(c.items['Gästebuch.gaestebuch'].html).toBeUndefined()
+  })
+
+  it('nimmt den Text einer .gaestebuch-Datei als feste Anleitung', () => {
+    const c = buildCatalog({ markdown: {}, images: {}, guestbooks: { '/inhalt/Gästebuch.gaestebuch': 'Sign with **your name**.\n' }, layout, guestbook: true })
+    expect(c.items['Gästebuch.gaestebuch'].html).toContain('<strong>your name</strong>')
   })
 
   it('ignoriert .gaestebuch-Dateien ohne Zugangsdaten', () => {
-    const c = buildCatalog({ markdown: {}, images: { '/inhalt/Gästebuch.gaestebuch': '/assets/g' }, layout })
+    const c = buildCatalog({ markdown: {}, images: {}, guestbooks: { '/inhalt/Gästebuch.gaestebuch': '' }, layout })
     expect(c.items['Gästebuch.gaestebuch']).toBeUndefined()
   })
 

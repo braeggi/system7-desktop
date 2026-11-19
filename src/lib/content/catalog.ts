@@ -58,6 +58,8 @@ export function buildCatalog(input: {
   layout: LayoutFile
   /** Nur mit Supabase-Zugangsdaten wird aus `*.gaestebuch` ein Gästebuch. */
   guestbook?: boolean
+  /** Rohtext der `*.gaestebuch`-Dateien: feste Anleitung über dem gemeinsamen Text (Markdown, darf leer sein) */
+  guestbooks?: Record<string, string>
   /** Rohtext der `*.projekte`-Dateien */
   projects?: Record<string, string>
 }): Catalog {
@@ -87,7 +89,11 @@ export function buildCatalog(input: {
   for (const [path, src] of Object.entries(input.images)) {
     if (usedByProjects.has(path)) continue
     if (IMAGE.test(path)) addFile(path, (id, folder, name) => ({ id, kind: 'image', title: name, folder, src }))
-    else if (input.guestbook && GUESTBOOK.test(path)) addFile(path, (id, folder, name) => ({ id, kind: 'guestbook', title: name, folder }))
+  }
+  for (const [path, raw] of Object.entries(input.guestbooks ?? {})) {
+    if (!input.guestbook || !GUESTBOOK.test(path)) continue
+    const html = raw.trim() ? renderMarkdown(raw) : undefined
+    addFile(path, (id, folder, name) => ({ id, kind: 'guestbook', title: name, folder, ...(html ? { html } : {}) }))
   }
 
   const positions: Record<ItemId, Point> = {}

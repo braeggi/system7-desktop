@@ -25,7 +25,7 @@ Alle Inhalte liegen im Ordner `inhalt/`.
 | `*.md` | einem Textdokument (Markdown) |
 | `*.jpg`, `*.jpeg`, `*.png`, `*.webp`, `*.gif`, `*.svg` (auch großgeschrieben, z. B. `.JPG`) | einem Bilddokument |
 | ein Unterordner | einem Ordner mit den Dokumenten darin |
-| `*.gaestebuch` (leere Datei) | dem gemeinsamen Gästebuch, nur mit Supabase-Zugangsdaten (siehe [Gästebuch](#gästebuch)) |
+| `*.gaestebuch` | dem gemeinsamen Gästebuch, nur mit Supabase-Zugangsdaten (siehe [Gästebuch](#gästebuch)); der Text der Datei erscheint als feste Anleitung darüber |
 
 - **Titel:** Der Titel eines Textdokuments kommt aus dem Frontmatter, sonst aus dem Dateinamen:
   ```markdown
@@ -95,6 +95,8 @@ Heißt das Repository `<benutzer>.github.io` oder nutzt du eine eigene Domain, s
 Auf dem Schreibtisch kann ein Gästebuch liegen: ein einziges Textdokument, in das jeder Besucher frei schreiben kann. Alle sehen denselben Text, und wer es gleichzeitig offen hat, sieht Änderungen der anderen live. Gespeichert wird bei [Supabase](https://supabase.com), einer Datenbank als Dienst. Der kostenlose Tarif reicht.
 
 Das Gästebuch erscheint nur, wenn die Datei `inhalt/Guestbook.gaestebuch` existiert **und** die Supabase-Zugangsdaten beim Bauen vorhanden sind. Ohne Zugangsdaten läuft die Seite ganz normal, nur ohne Gästebuch. Den Namen des Icons bestimmt der Dateiname, die Startposition steht wie bei allen anderen in `inhalt/schreibtisch.json`.
+
+**Anleitung:** Was in `inhalt/Guestbook.gaestebuch` steht (Markdown), erscheint fest über dem gemeinsamen Text. Besucher können sie nicht bearbeiten oder löschen, weil sie nicht in Supabase liegt, sondern mit der Seite ausgeliefert wird. Eine leere Datei zeigt keine Anleitung.
 
 ### Einrichten
 
