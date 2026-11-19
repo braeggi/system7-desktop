@@ -1,5 +1,6 @@
 """
-Zeichnet inhalt/pulp.gif: Vincent und Jules, eine Pizza fliegt heran, beide schießen.
+Zeichnet inhalt/pulp.gif: Vincent und Jules, eine Pizza fliegt heran, beide schießen,
+die Stücke verbrennen am Boden, und die Szene beginnt sauber von vorn.
 
 Alles ist Punkt für Punkt von Hand gezeichnet: Jede Figur ist eine Liste von Zeilen,
 jedes Zeichen ein Bildpunkt in der Farbe aus COLOR ('.' bleibt durchsichtig).
@@ -127,6 +128,9 @@ JULES = [
 GUN_DOWN = ["gG", ".G", ".G", ".G"]
 GUN_LEFT = ["GGGGGg", "....gg"]
 FLASH = [".F.", "FfF", ".F."]
+# Feuer auf den Pizzastücken: drei flackernde Flammen und ein kleines Glimmen
+FLAMES = [[".F.", "fFf", "fpf"], ["F..", ".Ff", "fpf"], ["..F", "fF.", "fpf"]]
+EMBER = ["f", "p"]
 
 # Die Pizza dreht sich im Flug: flach, schräg, von der Kante, schräg
 PIZZA_FLAT = [
@@ -174,7 +178,7 @@ def without_left_arm(sprite, cols, start=14):
     return [''.join('.' if j >= start and i in cols else c for i, c in enumerate(row)) for j, row in enumerate(sprite)]
 
 
-def frame(raised=False, pizza=None, flash=0, pieces=(), smoke=(), vincent_blink=False):
+def frame(raised=False, pizza=None, flash=0, pieces=(), smoke=(), vincent_blink=False, sprites=()):
     img = Image.new('RGB', (W, H), COLOR['bg'])
 
     def put(x, y, c):
@@ -215,7 +219,39 @@ def frame(raised=False, pizza=None, flash=0, pieces=(), smoke=(), vincent_blink=
         stamp(img, sprite, x - len(sprite[0]) // 2, y - len(sprite) // 2)
     for sprite, x, y in pieces:
         stamp(img, sprite, round(x), round(y))
+    for sprite, x, y in sprites:
+        stamp(img, sprite, round(x), round(y))
     return img
+
+
+def charred(sprite, stage):
+    """Ein Pizzastück beim Verbrennen: erst braun, dann schwarz."""
+    table = {1: str.maketrans('Pp', 'CC'), 2: str.maketrans('PpC', 'KKK')}[stage]
+    return [row.translate(table) for row in sprite]
+
+
+BURN_STEPS = 15  # so viele Bilder vergehen vom Aufprall eines Stücks, bis sein Rauch verflogen ist
+
+
+def burning(sp, x, y, age, n):
+    """Ein Stück `age` Bilder nach dem Aufprall: Glut, Flammen, verkohlt, dann Rauch.
+
+    Gibt das Stück (oder None, wenn es weg ist), Flammen-Sprites und Rauchpunkte zurück.
+    """
+    cx, top = round(x) + len(sp[0]) // 2, round(y)
+    if age >= BURN_STEPS:
+        return None, [], []
+    if age >= 9:
+        t = age - 9
+        smoke = [(cx + (t + n) % 2, top - 1 - t * 2, 'w' if t < 2 else 'O')]
+        if t < 4:
+            smoke.append((cx - 1 + (t + n) % 2, top - t * 2, 'O'))
+        return None, [], smoke
+    stage = 0 if age < 3 else 1 if age < 6 else 2
+    piece = (charred(sp, stage) if stage else sp, x, y)
+    if age in (0, 8):
+        return piece, [(EMBER, cx, top - 2)], []
+    return piece, [(FLAMES[(age + n) % 3], cx - 1, top - 3)], []
 
 
 def scene():
@@ -230,29 +266,43 @@ def scene():
     hx, hy = path[-1]
     frames.append((frame(raised=True, pizza=(PIZZA_FLAT, round(hx), round(hy)), flash=1), 70))
     frames.append((frame(raised=True, pizza=(PIZZA_ROUND, round(hx), round(hy)), flash=2), 70))
-    # die Pizza zerspringt, die Stücke fliegen auseinander und fallen auf den Boden
+    # die Pizza zerspringt, die Stücke fliegen auseinander, fallen auf den Boden und fangen dort Feuer
     parts = []
     for n, sp in enumerate(PIECES):
         a = math.pi * (0.1 + n * 0.8 / (len(PIECES) - 1))
         speed = 1.2 + (n % 3) * 0.4
         parts.append([sp, hx - 1, hy - 1, math.cos(a) * speed - 0.5, -math.sin(a) * speed - 0.6])
     muzzles = [(VX - 16, Y + 13), (VX - 8, Y + 10)]
-    for step in range(14):
-        for p in parts:
+    landed = [None] * len(parts)  # Bild, in dem ein Stück aufgekommen ist
+    lower_at = 22  # ab hier senken die beiden die Waffen, während es noch brennt
+    step = 0
+    # so lange, bis jedes Stück gelandet, verbrannt und sein Rauch verflogen ist
+    while any(l is None or step - l < BURN_STEPS for l in landed):
+        pieces, sprites, smoke = [], [], []
+        for n, p in enumerate(parts):
             sp, x, y, vx, vy = p
-            if y + len(sp) < FLOOR:
+            if landed[n] is None:
                 vy += 0.45
                 x, y = x + vx, y + vy
                 if y + len(sp) >= FLOOR:
                     y, vx, vy = FLOOR - len(sp), 0, 0
+                    landed[n] = step
                 p[1:] = [x, y, vx, vy]
-        smoke = [(sx - step // 2, sy - 1 - step, 'O' if step > 2 else 'w') for sx, sy in muzzles] if step < 6 else []
+            if landed[n] is None:
+                pieces.append((sp, x, y))
+                continue
+            # brennt sofort, sobald es am Boden liegt
+            piece, flames, puffs = burning(sp, x, y, step - landed[n], n)
+            if piece:
+                pieces.append(piece)
+            sprites += flames
+            smoke += puffs
+        if step < 6:
+            smoke += [(sx - step // 2, sy - 1 - step, 'O' if step > 2 else 'w') for sx, sy in muzzles]
         flash = 1 if step == 0 else 2 if step == 1 else 0
-        frames.append((frame(raised=True, pieces=[tuple(p[:3]) for p in parts], flash=flash, smoke=smoke), 80))
-    rest = [tuple(p[:3]) for p in parts]
-    # kurz stehen bleiben, dann die Waffen senken
-    frames.append((frame(raised=True, pieces=rest), 900))
-    frames.append((frame(pieces=rest), 1400))
+        frames.append((frame(raised=step < lower_at, pieces=pieces, flash=flash, smoke=smoke, sprites=sprites), 80))
+        step += 1
+    frames.append((frame(), 400))
     return frames
 
 
