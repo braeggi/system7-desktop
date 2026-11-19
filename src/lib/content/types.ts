@@ -21,6 +21,8 @@ export interface CatalogItem {
   src?: string
   /** Smiley und blinkender Cursor am Textende (Frontmatter `cursor: true`) */
   cursor?: boolean
+  /** Inhalt in der Fenstermitte (Frontmatter `center: true`) */
+  center?: boolean
   /** Inhalt einer Projektübersicht (`*.projekte`) */
   projects?: ProjectOverview
 }

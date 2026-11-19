@@ -1,15 +1,17 @@
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/
 
-export function parseFrontmatter(raw: string): { title?: string; cursor?: boolean; body: string } {
+export function parseFrontmatter(raw: string): { title?: string; cursor?: boolean; center?: boolean; body: string } {
   const match = raw.match(FRONTMATTER)
   if (!match) return { body: raw }
 
-  const result: { title?: string; cursor?: boolean; body: string } = { body: raw.slice(match[0].length) }
+  const result: { title?: string; cursor?: boolean; center?: boolean; body: string } = { body: raw.slice(match[0].length) }
   for (const line of match[1].split(/\r?\n/)) {
     const pair = line.match(/^(\w+):\s*(.*)$/)
     if (pair && pair[1] === 'title') result.title = unquote(pair[2].trim())
     // blinkender Cursor am Textende, siehe TextViewer
     if (pair && pair[1] === 'cursor' && pair[2].trim() === 'true') result.cursor = true
+    // Inhalt waagrecht und senkrecht in die Fenstermitte, etwa für ein ASCII-Bild
+    if (pair && pair[1] === 'center' && pair[2].trim() === 'true') result.center = true
   }
   return result
 }

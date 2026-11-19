@@ -52,6 +52,7 @@ Alle Inhalte liegen im Ordner `inhalt/`.
   }
   ```
   Ein neues Projektbild rastert `scripts/projektbild.py` aus einem Screenshot in Handybreite, im selben Schwarz-Weiß wie die Seite: `python3 scripts/projektbild.py screenshot.png inhalt/bilder/neu.png`.
+- **Zentriert:** `center: true` im Frontmatter stellt den Inhalt eines Textdokuments waagrecht und senkrecht in die Fenstermitte, etwa für ein ASCII-Bild wie in `inhalt/hey.md`. ASCII-Bilder schreibst du in einen Code-Block (drei Backticks), dann bleiben die Zeichen gleich breit und die Zeilen dicht.
 - **Papierkorb mit Meinung:** Bei jedem Wurf wackelt der Papierkorb, der Deckel hüpft und ein paar Papierknäuel fliegen heraus (bei „Bewegung reduzieren“ nicht). Unter `"papierkorb"` in `inhalt/seite.json` bekommt ein Element einen Spruch, der kurz in einer Sprechblase erscheint. Mit `"weigert": true` nimmt der Papierkorb es gar nicht erst an:
   ```json
   "papierkorb": {

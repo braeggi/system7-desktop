@@ -73,9 +73,9 @@ export function buildCatalog(input: {
 
   for (const [path, raw] of Object.entries(input.markdown)) {
     addFile(path, (id, folder, name) => {
-      const { title, cursor, body } = parseFrontmatter(raw)
+      const { title, cursor, center, body } = parseFrontmatter(raw)
       const html = renderMarkdown(body, imageResolver(path, input.images))
-      return { id, kind: 'text', title: title ?? name, folder, html, ...(cursor ? { cursor } : {}) }
+      return { id, kind: 'text', title: title ?? name, folder, html, ...(cursor ? { cursor } : {}), ...(center ? { center } : {}) }
     })
   }
   // Bilder, die nur zu einer Projektübersicht gehören, liegen nicht als eigene Icons herum

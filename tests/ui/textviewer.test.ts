@@ -15,4 +15,14 @@ describe('TextViewer', () => {
     render(TextViewer, { props: { html: '<p>Hallo</p>' } })
     expect(screen.queryByTestId('textende')).toBeNull()
   })
+
+  it('zentriert den Inhalt mit center', () => {
+    const { container } = render(TextViewer, { props: { html: '<pre>x</pre>', center: true } })
+    expect(container.querySelector('.prose')).toHaveClass('centered')
+  })
+
+  it('zentriert ohne center nicht', () => {
+    const { container } = render(TextViewer, { props: { html: '<p>x</p>' } })
+    expect(container.querySelector('.prose')).not.toHaveClass('centered')
+  })
 })

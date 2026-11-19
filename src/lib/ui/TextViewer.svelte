@@ -1,8 +1,8 @@
 <script lang="ts">
-  let { html, cursor = false }: { html: string; cursor?: boolean } = $props()
+  let { html, cursor = false, center = false }: { html: string; cursor?: boolean; center?: boolean } = $props()
 </script>
 
-<article class="prose">{@html html}</article>
+<article class="prose" class:centered={center}>{@html html}</article>
 {#if cursor}
   <!-- reine Dekoration: Smiley als 16×16-Pixelgrafik, daneben ein blinkender Textcursor -->
   <div class="ending" data-testid="textende" aria-hidden="true">
@@ -86,6 +86,22 @@
   .prose :global(img) {
     max-width: 100%;
     border: var(--frame);
+  }
+  /* center: true – der Inhalt steht in der Fenstermitte; ist er größer als das Fenster, wird gescrollt */
+  .prose.centered {
+    min-height: 100%;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .prose.centered > :global(*) {
+    margin: 0;
+  }
+  /* ASCII-Bilder: Zeilen ohne Abstand, damit die Zeichen zu Flächen zusammenwachsen */
+  .prose :global(pre) {
+    line-height: 1;
   }
   .prose :global(code) {
     font-family: Monaco, monospace;

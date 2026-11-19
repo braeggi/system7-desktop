@@ -19,4 +19,9 @@ describe('parseFrontmatter', () => {
     expect(parseFrontmatter('---\ncursor: false\n---\nText').cursor).toBeUndefined()
     expect(parseFrontmatter('---\ntitle: a\n---\nText').cursor).toBeUndefined()
   })
+
+  it('liest den Schalter center', () => {
+    expect(parseFrontmatter('---\ncenter: true\n---\nText').center).toBe(true)
+    expect(parseFrontmatter('---\ntitle: a\n---\nText').center).toBeUndefined()
+  })
 })

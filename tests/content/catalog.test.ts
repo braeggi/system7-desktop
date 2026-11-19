@@ -9,7 +9,7 @@ const layout = {
 const markdown = {
   '/inhalt/Über mich.md': '---\ntitle: Über mich\n---\nHallo',
   '/inhalt/Kontakt.md': 'Mail',
-  '/inhalt/Hallo.md': '---\ntitle: hello.txt\ncursor: true\n---\nHi',
+  '/inhalt/Hallo.md': '---\ntitle: hello.txt\ncursor: true\ncenter: true\n---\nHi',
   '/inhalt/Projekte/Erstes Projekt.md': '---\ntitle: Projekt Eins\n---\nText',
   '/inhalt/Projekte/Unter/X.md': 'tief',
   '/inhalt/Projekte/Mit Bild.md': '![Berg](../Fotos/Berg.svg)',
@@ -37,6 +37,8 @@ describe('buildCatalog', () => {
 
   it('übernimmt den Schalter cursor aus dem Frontmatter', () => {
     expect(catalog.items['Hallo.md'].cursor).toBe(true)
+    expect(catalog.items['Hallo.md'].center).toBe(true)
+    expect(catalog.items['Über mich.md'].center).toBeUndefined()
     expect(catalog.items['Über mich.md'].cursor).toBeUndefined()
   })
 

@@ -29,5 +29,5 @@
 {:else if item?.kind === 'image' && item.src}
   <ImageViewer src={item.src} title={item.title} />
 {:else if item}
-  <TextViewer html={item.html ?? ''} cursor={item.cursor} />
+  <TextViewer html={item.html ?? ''} cursor={item.cursor} center={item.center} />
 {/if}
