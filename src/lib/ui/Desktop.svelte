@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computeDeskLayout, trashPosition } from '../geometry/layout'
+  import { nearestInDirection, type Direction, type Placed } from '../geometry/nearest'
   import { isTrashFull, itemsOnDesk } from '../state/desk'
   import { viewport } from '../viewport.svelte'
   import { getDeskContext } from './actions'
@@ -26,6 +27,33 @@
   const full = $derived(isTrashFull(desk.state))
 
   let marquee: Marquee
+  let surface: HTMLElement
+
+  const TRASH = 'trash'
+  const ARROWS: Record<string, Direction> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' }
+
+  const placed: Placed[] = $derived([...onDesk.map((id) => ({ id, ...layout[id] })), { id: TRASH, ...trash }])
+
+  function deskIdOf(target: EventTarget | null): string | undefined {
+    return target instanceof HTMLElement ? target.dataset.deskId : undefined
+  }
+
+  function selectOnDesk(id: string) {
+    selection.id = id === TRASH ? null : id
+    surface.querySelector<HTMLElement>(`[data-desk-id="${CSS.escape(id)}"]`)?.focus()
+  }
+
+  function moveSelection(e: KeyboardEvent) {
+    const dir = ARROWS[e.key]
+    if (!dir || e.metaKey || e.ctrlKey || e.altKey) return
+    const focused = deskIdOf(e.target)
+    if (!focused && e.target !== document.body) return
+    e.preventDefault()
+    const from = focused ?? selection.id
+    const start = placed.find((p) => p.id === from)
+    const next = start ? nearestInDirection(start.id, placed, dir) : placed[0]?.id
+    if (next) selectOnDesk(next)
+  }
 
   // Wird das Browserfenster kleiner, rücken Fenster nach, damit ihre Titelleiste greifbar bleibt.
   $effect(() => {
@@ -33,7 +61,10 @@
   })
 </script>
 
+<svelte:window onkeydown={moveSelection} />
+
 <div
+  bind:this={surface}
   class="surface"
   data-drop="desk"
   role="presentation"
@@ -52,6 +83,7 @@
       selected={selection.id === id}
       drop={item.kind === 'folder' ? 'folder' : undefined}
       folderId={item.kind === 'folder' ? id : undefined}
+      deskId={id}
       style="position:absolute;left:{p.x}px;top:{p.y}px"
       drag={actions.dragOptions(id, {
         onTap: (pointerType, node) => {
@@ -70,6 +102,7 @@
       kind="trash"
       {full}
       drop="trash"
+      deskId={TRASH}
       drag={{
         id: 'trash',
         fixed: true,

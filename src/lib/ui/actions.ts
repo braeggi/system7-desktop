@@ -8,6 +8,7 @@ import { viewport } from '../viewport.svelte'
 import { MIN_WIN, type WindowContent, type WindowManager } from '../windows/windows.svelte'
 import { TrashTalk } from './trashTalk.svelte'
 import { rectOf } from './zoom'
+import type { VisitorCounter } from '../visitors/visitors.svelte'
 
 export interface Selection {
   id: ItemId | null
@@ -128,6 +129,7 @@ export interface DeskContext {
   actions: Actions
   site: SiteConfig
   trash: TrashTalk
+  visitors: VisitorCounter
 }
 
 export function setDeskContext(ctx: DeskContext) {

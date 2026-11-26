@@ -17,6 +17,7 @@
     variant = 'desk',
     drop = undefined,
     folderId = undefined,
+    deskId = undefined,
     gridIndex = undefined,
     drag = null,
     style = '',
@@ -30,6 +31,7 @@
     variant?: 'desk' | 'window'
     drop?: 'folder' | 'trash' | 'desk'
     folderId?: string
+    deskId?: string
     gridIndex?: number
     drag?: DraggableOptions | null
     style?: string
@@ -48,6 +50,7 @@
   aria-pressed={kind === 'trash' ? undefined : selected}
   data-drop={drop}
   data-folder-id={folderId}
+  data-desk-id={deskId}
   data-grid-index={gridIndex}
   {style}
   use:draggable={drag}

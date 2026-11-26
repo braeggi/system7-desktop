@@ -2,11 +2,16 @@ import { render, screen, within } from '@testing-library/svelte'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from '../../src/App.svelte'
+import { VisitorCounter } from '../../src/lib/visitors/visitors.svelte'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-async function openAbout(site: { titel: string; monogramm: string; autor?: string }, open: string[] = []) {
+async function openAbout(
+  site: { titel: string; monogramm: string; autor?: string },
+  open: string[] = [],
+  visitors?: VisitorCounter,
+) {
   const user = userEvent.setup()
-  render(App, { props: { catalog: fixtureCatalog, storage: null, site } })
+  render(App, { props: { catalog: fixtureCatalog, storage: null, site, visitors } })
   for (const name of open) {
     await user.dblClick(screen.getByRole('button', { name }))
     await screen.findByRole('dialog', { name })
@@ -36,5 +41,16 @@ describe('About This Desktop', () => {
     const dialog = await openAbout({ titel: 'Test', monogramm: 'T' }, ['Über mich'])
     expect(within(dialog).getByText('Über mich')).toBeInTheDocument()
     expect(dialog).toHaveTextContent('Largest Unused Block:7,648K')
+  })
+
+  it('zeigt die Zahl der Besucher, sobald sie bekannt ist', async () => {
+    const visitors = new VisitorCounter(async () => 1234, null)
+    const dialog = await openAbout({ titel: 'Test', monogramm: 'T' }, [], visitors)
+    expect(dialog).toHaveTextContent('Visitors:1,234')
+  })
+
+  it('lässt die Besucherzeile ohne Zahl weg', async () => {
+    const dialog = await openAbout({ titel: 'Test', monogramm: 'T' })
+    expect(dialog).not.toHaveTextContent('Visitors')
   })
 })

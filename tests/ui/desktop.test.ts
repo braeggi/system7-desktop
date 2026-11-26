@@ -106,4 +106,39 @@ describe('Desktop', () => {
     expect(back).toHaveClass('inactive')
     expect(front).not.toHaveClass('inactive')
   })
+
+  it('Pfeiltasten springen von Icon zu Icon und wählen es aus', async () => {
+    const user = setup()
+    screen.getByRole('button', { name: 'Über mich' }).focus()
+    await user.keyboard('{ArrowDown}')
+    const projekte = screen.getByRole('button', { name: 'Projekte' })
+    expect(projekte).toHaveFocus()
+    expect(projekte).toHaveAttribute('aria-pressed', 'true')
+
+    await user.keyboard('{ArrowUp}')
+    expect(screen.getByRole('button', { name: 'Über mich' })).toHaveFocus()
+  })
+
+  it('Pfeiltaste ohne Fokus beginnt beim ausgewählten Icon', async () => {
+    const user = setup()
+    await user.click(screen.getByRole('button', { name: 'Über mich' }))
+    ;(document.activeElement as HTMLElement).blur()
+    await user.keyboard('{ArrowDown}')
+    expect(screen.getByRole('button', { name: 'Projekte' })).toHaveFocus()
+  })
+
+  it('Pfeiltaste ohne Auswahl wählt ein Icon auf dem Desktop', async () => {
+    const user = setup()
+    await user.keyboard('{ArrowDown}')
+    expect(document.activeElement).toHaveClass('icon')
+  })
+
+  it('Pfeiltasten in einem Fenster wählen kein Icon aus', async () => {
+    const user = setup()
+    await user.dblClick(screen.getByRole('button', { name: 'Über mich' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Über mich' })
+    within(dialog).getByRole('button', { name: 'Close' }).focus()
+    await user.keyboard('{ArrowDown}')
+    expect(within(dialog).getByRole('button', { name: 'Close' })).toHaveFocus()
+  })
 })

@@ -39,7 +39,7 @@ Alle Inhalte liegen im Ordner `inhalt/`.
 - **Bilder im Text** bettest du mit einem Pfad relativ zum Dokument ein, zum Beispiel in einem Dokument `inhalt/Projects/Project.md`: `![Description](../Photos/Mountain.svg)`. Das Bild muss im Ordner `inhalt/` liegen. Es erscheint dann zusätzlich als eigenes Bilddokument. Bilder von anderen Webseiten (`https://…`) funktionieren ebenfalls.
 - **Bilddokumente** bauen sich beim Öffnen wie über ein altes Modem auf: in unregelmäßigen Streifen von oben nach unten, insgesamt etwa drei Sekunden. Wer im System „Bewegung reduzieren“ eingestellt hat, sieht das Bild sofort. Bilder im Text erscheinen immer sofort.
 - **Startpositionen:** `inhalt/schreibtisch.json` legt fest, wo die Icons beim ersten Besuch liegen. Die Positionen sind Pixel bezogen auf die `referenz`-Bildschirmgröße. Auf kleineren Bildschirmen werden sie verkleinert. Elemente ohne Eintrag bekommen automatisch einen freien Platz am rechten Rand.
-- **Seite:** `inhalt/seite.json` enthält den Titel, den das Info-Fenster anzeigt, das Monogramm in der Menüleiste (1–2 Buchstaben) und mit `autor` den Namen für die Copyright-Zeile im Info-Fenster. Das Info-Fenster sieht aus wie „About This Macintosh“: Offene Fenster stehen dort wie laufende Programme mit einem Speicherbalken. Die Werte sind ausgedacht und hängen nur von der Art des Fensters ab. Den Titel im Browser-Tab änderst du in `index.html`.
+- **Seite:** `inhalt/seite.json` enthält den Titel, den das Info-Fenster anzeigt, das Monogramm in der Menüleiste (1–2 Buchstaben) und mit `autor` den Namen für die Copyright-Zeile im Info-Fenster. Das Info-Fenster sieht aus wie „About This Macintosh“: Offene Fenster stehen dort wie laufende Programme mit einem Speicherbalken. Die Werte sind ausgedacht und hängen nur von der Art des Fensters ab. Ist der Besucherzähler eingerichtet (siehe unten), steht dort auch „Visitors“. Den Titel im Browser-Tab änderst du in `index.html`.
 - **Begrüßung:** `"start": "hello world.md"` in `inhalt/seite.json` öffnet dieses Dokument bei jedem Besuch von selbst, auf dem Computer als Fenster, auf dem Handy als Karte. Ohne den Eintrag öffnet sich nichts. Liegt das Dokument im Papierkorb, bleibt es ebenfalls zu.
 - **Project Resources:** Eine Datei `*.projekte` (JSON) wird zu einem eigenen Fenster mit Titel, Untertitel und Projekten in zwei Spalten. Jedes Projekt hat Bild, Namen und einen Satz, ein Klick öffnet den Link im neuen Tab. Bilder liegen relativ zur Datei, etwa in `inhalt/bilder/`, und erscheinen nicht als eigene Icons:
   ```json
@@ -129,11 +129,24 @@ Supabase legt kostenlose Projekte nach etwa einer Woche ohne Zugriffe schlafen. 
 
 ### Datenschutz
 
-Die Seite speichert nur, was Besucher selbst ins Gästebuch schreiben. Erst wenn jemand das Gästebuch öffnet, verbindet sich der Browser mit Supabase; dabei verarbeitet Supabase technisch bedingt die IP-Adresse. Erwähne Supabase deshalb in deiner Datenschutzerklärung. Das ist keine Rechtsberatung.
+Die Seite speichert nur, was Besucher selbst ins Gästebuch schreiben, und die Zahl der Besucher. Für den Besucherzähler fragt jeder Browser beim Laden kurz Supabase an; mit dem Gästebuch verbindet er sich erst, wenn jemand es öffnet. Dabei verarbeitet Supabase technisch bedingt die IP-Adresse. Erwähne Supabase deshalb in deiner Datenschutzerklärung. Das ist keine Rechtsberatung.
 
 ### Abschalten
 
 Datei `inhalt/Guestbook.gaestebuch` löschen und die Seite neu veröffentlichen. Die Einträge bleiben in Supabase erhalten.
+
+## Besucherzähler
+
+Im Fenster „About This Desktop“ steht unter dem Speicher die Zeile „Visitors: 1,234“. Jeder Browser zählt einmal: Beim ersten Besuch erhöht er die Zahl und merkt sich das im `localStorage`. Spätere Besuche lesen die Zahl nur. Wer den Browserspeicher löscht oder ein privates Fenster öffnet, zählt noch einmal. Blockiert ein Browser den Speicher ganz, zählt er nie und sieht nur die Zahl. Die Zahl ist ein Spass und kein genaues Messinstrument: Jemand mit Absicht kann sie hochtreiben.
+
+**Einrichten:** Er nutzt dasselbe Supabase-Projekt und dieselben Zugangsdaten wie das Gästebuch. Im **SQL Editor** den Inhalt von `supabase/besucher.sql` einfügen und ausführen. Mehrfaches Ausführen schadet nicht. Ohne Skript oder ohne Zugangsdaten fehlt die Zeile einfach.
+
+**Zahl ändern:** Im **SQL Editor** zum Beispiel `update besucher set anzahl = 0 where id = 1;` ausführen.
+
+## Bedienung
+
+- **Uhr:** Ein Klick auf die Uhr oben rechts zeigt das Datum, ein zweiter wieder die Uhrzeit.
+- **Tastatur:** Die Pfeiltasten springen auf dem Schreibtisch von Icon zu Icon, Enter öffnet es. Esc schliesst das vorderste Fenster.
 
 ## Hintergrund
 

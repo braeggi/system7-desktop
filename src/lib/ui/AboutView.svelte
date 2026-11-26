@@ -9,7 +9,7 @@
   import TextIcon from './icons/TextIcon.svelte'
   import TrashIcon from './icons/TrashIcon.svelte'
 
-  const { site, desk, windows } = getDeskContext()
+  const { site, desk, windows, visitors } = getDeskContext()
 
   // Wie „About This Macintosh“: offene Fenster gelten als laufende Programme
   const memory = $derived(memoryRows([...windows.windows.map((w) => w.content), ...windows.stack], desk.catalog))
@@ -34,6 +34,9 @@
   <dl class="totals">
     <div><dt>Total Memory:</dt><dd>{formatK(TOTAL_MEMORY)}</dd></div>
     <div><dt>Largest Unused Block:</dt><dd>{formatK(memory.unused)}</dd></div>
+    {#if visitors.count !== null}
+      <div><dt>Visitors:</dt><dd>{visitors.count.toLocaleString('en-US')}</dd></div>
+    {/if}
   </dl>
 
   <ul class="apps">
@@ -74,9 +77,10 @@
     font-weight: 400;
   }
   .totals {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto;
     justify-content: space-between;
-    gap: 12px;
+    gap: 2px 12px;
     margin: 12px 0 0;
     padding-bottom: 6px;
     border-bottom: var(--frame);

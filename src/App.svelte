@@ -11,9 +11,15 @@
   import { onMount } from 'svelte'
   import { itemsInTrash, startDocument } from './lib/state/desk'
   import { TrashTalk } from './lib/ui/trashTalk.svelte'
+  import { VisitorCounter } from './lib/visitors/visitors.svelte'
   import { WindowManager } from './lib/windows/windows.svelte'
 
-  let { catalog, storage, site }: { catalog: Catalog; storage: Storage | null; site: SiteConfig } = $props()
+  let {
+    catalog,
+    storage,
+    site,
+    visitors = new VisitorCounter(null, null),
+  }: { catalog: Catalog; storage: Storage | null; site: SiteConfig; visitors?: VisitorCounter } = $props()
 
   // Katalog und Speicher stehen beim Start fest; Änderungen zur Laufzeit gibt es nicht.
   // svelte-ignore state_referenced_locally
@@ -24,7 +30,7 @@
   const trash = new TrashTalk(site.papierkorb)
   const actions = createActions(desk, windows, selection, trash)
   // svelte-ignore state_referenced_locally
-  setDeskContext({ desk, windows, selection, actions, site, trash })
+  setDeskContext({ desk, windows, selection, actions, site, trash, visitors })
 
   let confirmEmpty = $state(false)
 
@@ -32,6 +38,7 @@
   onMount(() => {
     const id = startDocument(desk.state, desk.catalog, site.start)
     if (id) actions.open({ kind: 'item', id })
+    void visitors.start()
   })
 
   // Beim Wechsel zwischen Computer- und Handy-Darstellung bleiben keine Fenster hängen.
